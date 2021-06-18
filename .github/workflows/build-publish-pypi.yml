@@ -1,0 +1,125 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Build Test and Publish
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  release:
+  workflow_dispatch:
+
+jobs:
+  build-macos:
+    name: Build macOS wheels and source dist
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        python-version: ["3.6", "3.7", "3.8", "3.9"]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip wheel build numpy
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Building for test
+      run: |
+        pip install -e .
+    - name: Testing build
+      run: |
+        python docs/tutorial/example.py
+    - name: Creating wheels and source dist
+      run: |
+        python setup.py sdist bdist_wheel
+    - uses: actions/upload-artifact@v2
+      with:
+        path: ./dist/*.whl
+    - uses: actions/upload-artifact@v2
+      with:
+        path: ./dist/*.tar.gz
+    - name: Dist directory contents
+      run: |
+        ls -l ./dist
+
+  build-linux:
+    name: Build LINUX wheels on ubuntu
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v2
+        name: Install Python
+
+      - name: Install cibuildwheel
+        run: python -m pip install numpy cibuildwheel==1.7.4
+
+      - name: Build wheels
+        run: python -m cibuildwheel --output-dir dist
+        env:
+          CIBW_SKIP: "cp27-* pp27-* cp35-* pp35-*"  # skip Python 2.7 wheels
+      
+      - uses: actions/upload-artifact@v2
+        with:
+          path: ./dist/*.whl
+      - name: List directory contents
+        run: |
+          ls -l ./dist
+
+  # build-windows:
+  #   name: Build WINDOWS wheels
+  #   runs-on: windows-latest
+  #   strategy:
+  #     matrix:
+  #       python-version: ["3.6", "3.7", "3.8","3.9"]
+  #   steps:
+  #    - uses: actions/checkout@v1
+  #    - uses: conda-incubator/setup-miniconda@v2
+  #      with:
+  #        miniconda-version: "latest"
+  #        auto-update-conda: true
+  #        add-pip-as-python-dependency: true
+  #        python-version: ${{ matrix.python-version }}
+  #    - name: Installing required conda packages
+  #      run: |
+  #        conda install -c default -c anaconda -c msys2 numpy libpython m2w64-toolchain
+  #    - name: Building for test
+  #      run: |
+  #        pip install -e .
+  #    - name: Testing build
+  #      run: |
+  #        python docs/tutorial/example.py
+  #    - name: Creating wheels
+  #      run: |
+  #        python setup.py bdist_wheel
+  #    - uses: actions/upload-artifact@v2
+  #      with:
+  #        path: ./dist/*.whl
+  #    - uses: actions/upload-artifact@v2
+  #      with:
+  #        path: ./dist/*.tar.gz
+  #    - name: List directory contents
+  #      run: |
+  #        ls -l ./dist
+         
+  upload_all:
+    needs: [build-macos, build-linux] #, build-windows]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+     - uses: actions/download-artifact@v2
+       with:
+         name: artifact
+         path: dist
+     - name: List directory contents
+       run: |
+         ls -l ./dist
+     - uses: pypa/gh-action-pypi-publish@v1.4.1
+       with:
+         user: __token__
+         password: ${{ secrets.PYPITOKEN }}
