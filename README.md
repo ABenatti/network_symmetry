@@ -46,13 +46,13 @@ Step 3: Load the network data in an measurer object
 measurer = ns.Network(vertex_count = vertex_count, edges = edges, directed = directed, weights= weights)
 ```
 
-Step 4: To set the parameters use:
+Step 4: Set the parameters use:
 ```python
 h_max = 3
 measurer.set_parameters(h_max= h_max)
 ```
 
-Step 5: To calculate the measurements use: 
+Step 5: Calculate the measurements use: 
 ```python
 measurer.compute_symmetry()
 ```
