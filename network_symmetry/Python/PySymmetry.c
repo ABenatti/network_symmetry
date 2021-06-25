@@ -20,29 +20,22 @@
 #include <omp.h>
 #endif //_OPENMP
 
-static PyArrayObject *
-pyvector(PyObject *objin)
-{
+static PyArrayObject * pyvector(PyObject *objin){
 	return (PyArrayObject *)PyArray_ContiguousFromObject(objin, NPY_FLOAT, 1, 1);
 }
 
-static PyArrayObject *
-convertToUIntegerArray(PyObject *object, int minDepth, int maxDepth)
-{
+static PyArrayObject * convertToUIntegerArray(PyObject *object, int minDepth, int maxDepth) {
 	int flags = NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_ALIGNED;
 	return PyArray_FromAny(
 		object, PyArray_DescrFromType(NPY_UINT64), minDepth, maxDepth, flags, NULL);
 }
-static PyArrayObject *
-convertToIntegerArray(PyObject *object, int minDepth, int maxDepth)
-{
+static PyArrayObject * convertToIntegerArray(PyObject *object, int minDepth, int maxDepth){
 	int flags = NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_ALIGNED;
 	return PyArray_FromAny(
 		object, PyArray_DescrFromType(NPY_INT64), minDepth, maxDepth, flags, NULL);
 }
-static PyArrayObject *
-convertToDoubleArray(PyObject *object, int minDepth, int maxDepth)
-{
+
+static PyArrayObject * convertToDoubleArray(PyObject *object, int minDepth, int maxDepth){
 	int flags = NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_ALIGNED;
 	return PyArray_FromAny(object,
 							 PyArray_DescrFromType(NPY_FLOAT64),
@@ -51,9 +44,8 @@ convertToDoubleArray(PyObject *object, int minDepth, int maxDepth)
 							 flags,
 							 NULL);
 }
-static PyArrayObject *
-convertToFloatArray(PyObject *object, int minDepth, int maxDepth)
-{
+
+static PyArrayObject * convertToFloatArray(PyObject *object, int minDepth, int maxDepth){
 	int flags = NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_ALIGNED;
 	return PyArray_FromAny(object,
 							 PyArray_DescrFromType(NPY_FLOAT32),
@@ -66,9 +58,7 @@ convertToFloatArray(PyObject *object, int minDepth, int maxDepth)
 /* ==== Create 1D Carray from PyArray ======================
 																																Assumes PyArray
 	 is contiguous in memory.             */
-static void *
-pyvector_to_Carrayptrs(PyArrayObject *arrayin)
-{
+static void * pyvector_to_Carrayptrs(PyArrayObject *arrayin){
 	int i, n;
 
 	n = arrayin->dimensions[0];
@@ -77,9 +67,7 @@ pyvector_to_Carrayptrs(PyArrayObject *arrayin)
 
 /* ==== Check that PyArrayObject is a double (Float) type and a vector
 				 ============== return 1 if an error and raise exception */
-static int
-not_floatvector(PyArrayObject *vec)
-{
+static int not_floatvector(PyArrayObject *vec){
 	if (vec->descr->type_num != NPY_FLOAT) {
 		PyErr_SetString(PyExc_ValueError,
 						"In not_floatvector: array must be of "
@@ -102,35 +90,29 @@ static int not_intvector(PyArrayObject *vec){
 	return 0;
 }
 
-typedef struct _PyNetwork {
+typedef struct _PyNetwork{
 	PyObject_HEAD CVNetwork *network;
 	CVBool verbose;
 } PyMeasurer;
 
-int PyMeasurer_traverse(PyMeasurer *self, visitproc visit, void *arg)
-{
+int PyMeasurer_traverse(PyMeasurer *self, visitproc visit, void *arg){
 	// Py_VISIT(self->...);
 	return 0;
 }
 
-int PyMeasurer_clear(PyMeasurer *self)
-{
+int PyMeasurer_clear(PyMeasurer *self){
 	// Py_CLEAR(self->...);
 	return 0;
 }
 
-void PyMeasurer_dealloc(PyMeasurer *self)
-{
-	// PyObject_GC_UnTrack(self);
-	// PyMeasurer_clear(self);
+void PyMeasurer_dealloc(PyMeasurer *self){ // USAR ISSO
 	if (self->network) {
 		CVNetworkDestroy(self->network);
 	}
 	Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
-PyObject *PyMeasurer_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
-{
+PyObject *PyMeasurer_new(PyTypeObject *type, PyObject *args, PyObject *kwds){
 	PyMeasurer *self;
 	self = (PyMeasurer *)type->tp_alloc(type, 0);
 	self->network = NULL;
@@ -244,7 +226,7 @@ PyObject *PyMeasurer_compute(PyMeasurer *self, PyObject *commandList){
 	CVIndex commandListLength = PySequence_Fast_GET_SIZE(commandList);
 
 	//Counting valid inputs
-	CVIndex size = 0;
+	CVIndex size = 1;
 	for (CVIndex i =0; i < commandListLength; i++){
 		if (strcmp(CVNewStringFromString((CVString)PyUnicode_AsUTF8(PySequence_Fast_GET_ITEM(commandList, i))), "") != 0){
 			size++;
@@ -262,30 +244,28 @@ PyObject *PyMeasurer_compute(PyMeasurer *self, PyObject *commandList){
 	}
 
 	CVSymmetryOutputParameters **results;
-	CVInteger* level = -1;
+	CVInteger level = -1;
+	CVInteger* level_pointer = &level;
+	
 	results = calloc(network->verticesCount, sizeof(CVSymmetryOutputParameters*));
-	
-	CVSymmetryApplication(network, (int) size, commandLine, results, &level);
-	
+
+	CVSymmetryApplication(network, (int) size, commandLine, results, level_pointer);
+
 	PyListObject* pySymmetries = NULL;
 	CVIndex numberOfLists = ((CVIndex) level-1) * 3;  
-	
-	// printf("---%d--- %d\n", level, numberOfLists);
 
 	pySymmetries = PyList_New(numberOfLists);
 	
 	PyListObject* measurement = NULL;
 	CVIndex positionInList = 0;
-
-	//Mexer com isso para arruamar
 	CVSymmetryOutputParameters* vertexOutput = NULL;
-
-	//Accessibility
+	
+	
 	CVFloat aux = 0.;
 	PyObject* value = NULL;
+	//Accessibility
 	for (CVIndex i=2; i<=(CVIndex)level; i++){
 		measurement = PyList_New(0);
-		//Accessibility
 		for (CVIndex j=0; j < verticesCount; j++){
 			aux = results[j]->backboneAccessibility[i];
 			value = Py_BuildValue("d", aux);
@@ -299,7 +279,6 @@ PyObject *PyMeasurer_compute(PyMeasurer *self, PyObject *commandList){
 	//Symmetry Backbone
 	for (CVIndex i=2; i<=(CVIndex)level; i++){
 		measurement = PyList_New(0);
-		//Accessibility
 		for (CVIndex j=0; j < verticesCount; j++){
 			aux = results[j]->normalizedBackboneAccessibility[i];
 			value = Py_BuildValue("d", aux);
@@ -313,7 +292,6 @@ PyObject *PyMeasurer_compute(PyMeasurer *self, PyObject *commandList){
 	//Symmetry Merged
 	for (CVIndex i=2; i<=(CVIndex)level; i++){
 		measurement = PyList_New(0);
-		//Accessibility
 		for (CVIndex j=0; j < verticesCount; j++){
 			aux = results[j]->normalizedMergedAccessibility[i];
 			value = Py_BuildValue("d", aux);
@@ -329,9 +307,15 @@ PyObject *PyMeasurer_compute(PyMeasurer *self, PyObject *commandList){
 		CVSymmetryOutputDestroy(results[i]);
 	}
 	free(results);
-	
-	// CVNetworkDestroy(network);
 
+	//Arruamr aqui
+	// printf("%d\n",size);
+	// for (CVIndex i=0; i < size; i++){
+	// 	CVStringDestroy(commandLine[i]);
+	// }
+	// printf("saiu");
+	free(&commandLine);
+	
 	return (PyListObject*) pySymmetries;
 }
 

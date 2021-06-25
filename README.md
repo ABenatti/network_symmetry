@@ -1,6 +1,12 @@
-# CXRandomWalk
+# Network symmetry
 
-Fast library written in C for python to generate sentences based on random walks from networks. Can be used to generate input data for word2vec and other embedding techniques.
+Fast library written in C for python to calculate network Accessibility and Symmetry. More information regarding these measurements are described in the papers listed as follows:
+
+Travençolo, Bruno Augusto Nassif, and L. da F. Costa. "Accessibility in complex networks." Physics Letters A 373, no. 1 (2008): 89-95.
+
+Silva, Filipi N., Cesar H. Comin, Thomas K. DM Peron, Francisco A. Rodrigues, Cheng Ye, Richard C. Wilson, Edwin R. Hancock, and Luciano da F. Costa. "Concentric network symmetry." Information Sciences 333 (2016): 61-80.
+
+If you use this code in a scientific study, please cite the respective references and this library. These codes have no warranty.
 
 ## Install
 
@@ -9,99 +15,108 @@ Requires python headers and a C11 compatible compiler, such as gcc or clang.
 To install it, simply run:
 
 ```bash
-pip install cxrandomwalk
+pip install network_symmetry
 ```
 
 or clone this repository and install it from master by running:
 
 ```bash
-pip install git+git://github.com/filipinascimento/cxrandomwalk.git
+pip install git+https://github.com/ABenatti/network_symmetry.git
 ```
 ## Usage
-The walking algorithm uses regular random walks and biased random walks according to node2vec ([https://snap.stanford.edu/node2vec/]).
-
 Step 1: Import the libraries
 
 ```python
 import numpy as np
-import cxrandomwalk as rw
+import network_symmetry as ns
 ```
 
 Step 2: Convert network to a edgelist and a list of weights (optional)
 
 ```python
-vertexCount = 10;
-edges = np.random.randint(0,vertexCount-1,(vertexCount*2, 2))
-weights = np.random.random(size=vertexCount*2);
+vertex_count = 10
+edges = np.array([(0, 1), (0, 2), (1, 2), (0, 3), (1, 3), (2, 3), (2, 4), (3, 4), (0, 4), (4, 5), (3, 5), (1, 5), (1, 6), (3, 6), (4, 6), (5, 7), (4, 7), (0, 7), (5, 8), (4, 8), (3, 8), (3, 9), (7, 9), (0, 9)])
+weights = np.random.random(size=edges.shape[0])
+directed = False
 ```
 
-Step 3: Load the network data in an agent object
+Step 3: Load the network data in an measurer object
 
 ```python
-agent = rw.Agent(vertexCount,edges,False,weights)
+measurer = ns.Network(vertex_count = vertex_count, edges = edges, directed = directed, weights= weights)
 ```
 
-To generate the sequences use: 
+To set the parameters use:
 ```python
-sequences = agent.generateWalks(p=2,q=3,verbose=True)
+h_max = 3
+measurer.set_parameters(h_max= h_max)
 ```
 
-The output is a list of lists with the walks.
+To calculate the measurements use: 
+```python
+measurer.compute_symmetry()
+```
 
+The outputs can be seen as follows.
+```python
+print("\nResults:")
+for h in range(2,h_max+1):
+    print("h =", h)
+    print(" Accessibility:")
+    print(" ", measurer.get_accessibility(h))
+    print(" Symmetry (backbone):")
+    print(" ",measurer.get_symmetry_backbone(h))
+    print(" Symmetry (merged):")
+    print(" ",measurer.get_symmetry_merged(h))
+```
 
 ## API Documentation
 ```python
-cxrandomwalk.Agent(vertexCount,edges,directed=False,weights=None)
+measurer = ns.Network(vertex_count = vertex_count, edges = edges, directed = directed, weights= weights)
 ```
-- `vertexCount` - number of vertices in the network
-- `edges` - list of edges 
-- `directed` - directed or not
-- `weights` - list containing the weights of the edges (use the same order as edges)
-~returns a rw.Agent instance~ 
+- `vertex_count` - number of vertices in the network;
+- `edges` - list of edges;
+- `directed` - directed or not;
+- `weights` - list containing the weights of the edges (use the same order as edges).
+
 
 ```python
-cxrandomwalk.Agent.generateWalks(p=1.0,q=1.0,windowSize=80,walksPerNode=10,verbose=False,filename=None,callback=None,updateInterval=1000)
+measurer.set_parameters(h_max = 2,
+                        merge_last_level = True,
+                        live_stream = False,
+                        parallel_jobs = 1,
+                        verbose = False,
+                        show_status = True
+                        )
 ```
-- `p` - for p in node2vec walks (1.0 for unbiased) 
-- `q` - for q in node2vec walks (1.0 for unbiased) 
-- `windowSize` - length of each walk 
-- `walksPerNode` - number of sentences to be generated 
-- `verbose` - enable verbose mode
-- `filename` - save sentences to filename instead of returning the sequences
-- `callback` - callback function that runs 
-- `updateInterval` - set the interval between iterations so that python interruptions work 
+- `h_max` - Compute all symmetries and accessibilities for h=2 to h_max, which must be greater or equals to 2;
+- `merge_last_level` - Merge the last level. True by default;
+- `live_stream` - Stream the output as results are obtained. Note that the results may be out of order;
+- `parallel_jobs` - The number of parallel jobs, which must be greater or equals to 1; 
+- `verbose` - If True, shows the calculation steps;
+- `show_status` - If True, show the progress of the calculation.
 
-returns a list of lists containing the sequences. If filename is provided, instead of returning a list, the method creates the file and fill with the walks, with words separated by spaces and sentences separated by new lines. It can be used directly on gensim.
-
-## TODO
-- Include other kinds of walks
-- Better documentation and CLI help
-
-
-## Example with tqdm callback
 
 ```python
-import numpy as np
-import cxrandomwalk as rw
-from tqdm.auto import tqdm 
-
-vertexCount = 10000;
-edges = np.random.randint(0,vertexCount-1,(vertexCount*2, 2))
-weights = np.random.random(size=vertexCount*2);
-
-agent = rw.Agent(vertexCount,edges,False,weights)
-
-def make_pbar():
-  pbar = None
-  def inner(current,total):
-    nonlocal pbar
-    if(pbar is None):
-      pbar= tqdm(total=total);
-    pbar.update(current - pbar.n)
-  return inner
-
-print(len(agent.generateWalks(q=1.0,p=1.0,verbose=False,updateInterval=1000,callback=make_pbar())))
-
+measurer.compute_symmetry()
 ```
+Compute symmetries and accessibilities by using the parameters set in "set_parameters".
 
+
+```python
+accessibility = measurer.get_accessibility(h)
+symmetry_backbone = measurer.get_symmetry_backbone(h)
+symmetry_merged = measurer.get_symmetry_merged(h)
+```
+- `h`- desired number of steps.
+These methods return the respective lists measurements. The order of measures in the lists follows the node orders.
+
+## Libraries
+All of these codes were developed and executed with the environment described in "requirements.txt". 
+
+## Citation Request
+If you publish a paper related to this material, please cite this repository and the respective papers.
+
+## Acknowledgements
+Alexandre Benatti thanks Coordenação de Aperfeiçoamento de Pessoal de Nível Superior – Brasil (CAPES) – Finance Code (001) (grant no. 88882.328749/2019-01). Henrique F. de Arruda acknowledges FAPESP for sponsorship (grant no. 2018/10489-0). Luciano da F. Costa thanks CNPq (grant no. 307085/2018-0) and NAP-PRP-USP for sponsorship. This work has been supported also by FAPESP grant no. 2015/22308-2.
 

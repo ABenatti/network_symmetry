@@ -54,8 +54,6 @@ int CVSymmetryApplication(CVNetwork* theNetwork, int argc, char** argv, CVSymmet
 		{"output-cluscoeff",  no_argument,       NULL, 'C'},
 		{"output-betweenness",no_argument,       NULL, 'B'},
 		{"output-stress",     no_argument,       NULL, 'T'},
-		{"export-csv",        no_argument,       NULL, 'c'},
-		{"export-multiple",   no_argument,       NULL, 'm'},
 		{"live-stream",       no_argument,       NULL, 's'},
 		{"parallel-jobs",     required_argument, NULL, 'j'},
 		{"verbose",           no_argument,       NULL, 'v'},
@@ -69,7 +67,7 @@ int CVSymmetryApplication(CVNetwork* theNetwork, int argc, char** argv, CVSymmet
 	int optionCode;
 	int optionIndex = 0;
 	
-	CVInteger level = 4;
+	CVInteger level = 2;
 	CVBool verbose = CVFalse;
 	CVBool quiet = CVFalse;
 	CVBool liveStream = CVFalse;
@@ -89,18 +87,12 @@ int CVSymmetryApplication(CVNetwork* theNetwork, int argc, char** argv, CVSymmet
 	CVBool outputBetweenness = CVFalse;
 	CVBool outputStress = CVFalse;
 	
-	CVBool exportCSV = CVFalse;
-	CVBool exportMultiple = CVFalse;
-	
 	CVInteger maxParallelJobs = 0;
 	
 	CVSize filesCount = 0;
 	FILE * verboseStream = NULL;
 	
-	const char* outputFilename = "<STDOUT>";
-	FILE* networkFile = stdin;
-	FILE* outputFile = stdout;
-	
+	optind = 0;//It is necessary because getopt_long can be executed many times
 	while ((optionCode=getopt_long(argc, argv, "l:pPracdDCBTmMsj:hVvqSi",options, &optionIndex))>=0){
 		switch (optionCode){
 			case 'l':
@@ -141,12 +133,6 @@ int CVSymmetryApplication(CVNetwork* theNetwork, int argc, char** argv, CVSymmet
 			case 'r':
 				outputReachable = CVTrue;
 				break;
-			case 'c':
-				exportCSV = CVTrue;
-				break;
-			case 'm':
-				exportMultiple = CVTrue;
-				break;
 			case 'j':
 				if(!sscanf(optarg, "%"CVIntegerScan,&maxParallelJobs)||maxParallelJobs<=0){
 					printf("Error: Parameter \"%s\" for option --parallel-jobs (-j) is invalid. Use a integer > 0.\n",optarg);
@@ -170,12 +156,6 @@ int CVSymmetryApplication(CVNetwork* theNetwork, int argc, char** argv, CVSymmet
 		}
 	}
 	
-	if(exportCSV && exportMultiple){
-		printf("Error: Export to CSV and export to multiple files can not be used at same time.\n");
-		return EXIT_FAILURE;
-		
-	}
-	
 	verboseStream = stderr;
 	filesCount = argc-optind;
 	
@@ -183,42 +163,18 @@ int CVSymmetryApplication(CVNetwork* theNetwork, int argc, char** argv, CVSymmet
 		if(filesCount>1){
 			printf("Error: Found extra %"CVSizeScan" file parameters, please provide only the output file if --input-stdin is enabled.\n", filesCount- 1);
 			return EXIT_FAILURE;
-		}else if(filesCount>0){
-			outputFilename = argv[optind];
-			outputFile = fopen(outputFilename, "w");
-		}
-	}else{
-		if(filesCount > 1){
-			printf("Error: Found extra %"CVSizeScan" file parameters, please provide only one filename.\n", filesCount - 2);
-			return EXIT_FAILURE;
-		}else{// filesCount == 1
-			outputFilename = argv[optind];
-			outputFile = fopen(outputFilename, "w");
 		}
 	}
 	
-	if(quiet || outputFile==stdout){
-		verboseStream = stderr;
-	}else if(verbose){
+	if(verbose){
 		verboseStream = stdout;
-	}
-	
-	if(liveStream && outputFile==stdout){
-		quiet = CVTrue;
 	}
 	
 	if(forceShowStatus){
 		quiet = CVFalse;
 	}
 	
-	
-	if(!outputFile){
-		fprintf(stderr, "Error: %s: No such file or directory, or user does not have write permissions.\n",outputFilename);
-		return EXIT_FAILURE;
-	}
-	
 	if(verbose){
-		fprintf(verboseStream,"# Output File: %s\n",outputFilename);
 		fprintf(verboseStream,"# Parsing network file.\n");
 	}
 	// CVNetwork* theNetwork = CVNewNetworkFromXNETFile(networkFile);
@@ -227,7 +183,6 @@ int CVSymmetryApplication(CVNetwork* theNetwork, int argc, char** argv, CVSymmet
 		fprintf(stderr, "Error: Network is malformed. \n");
 		return EXIT_FAILURE;
 	}
-	
 	
 	CVOperationControl* operationControl = CVOperationControlCreate();
 	
@@ -241,7 +196,6 @@ int CVSymmetryApplication(CVNetwork* theNetwork, int argc, char** argv, CVSymmet
 	
 	if(liveStream){
 		operationControl->streamCallback = CVSymmetryApplicationPrintLiveStream;
-		operationControl->defaultStreamFile = outputFile;
 	}
 	
 	if(verbose){
@@ -258,7 +212,7 @@ int CVSymmetryApplication(CVNetwork* theNetwork, int argc, char** argv, CVSymmet
 		fprintf(verboseStream,"#   Live Stream: %s\n", liveStream?"yes":"no");
 		fprintf(verboseStream,"#\n# Starting Calculations now...\n");
 	}
-	
+
 	CVFloatArray centrality;
 	if(outputBetweenness){
 		CVFloatArrayInitWithCapacity(theNetwork->verticesCount, &centrality);
@@ -315,234 +269,12 @@ int CVSymmetryApplication(CVNetwork* theNetwork, int argc, char** argv, CVSymmet
 	}
 	
 	CVNetworkCalculateSymmetry(theNetwork, level, (outputAccessed||outputReachable)?CVTrue:CVFalse, (outputProbabilities)?CVTrue:CVFalse,mergeLastLevel, outputArray, operationControl);
-	
+
 	if(!quiet){
 		fprintf(stderr,"\n");
 	}
 	if(verbose){
 		fprintf(verboseStream,"# Finished accessibility calculation%s\n",liveStream?".":", now exporting to output...");
-	}
-	
-	
-	CVIndex i;
-	if(!liveStream){
-		if(!exportCSV&&!exportMultiple){
-			CVIndex l;
-			for (l=2; l<=level; l++) {
-				fprintf(outputFile, "#v \"Backbone Symmetry h=%"CVIndexScan"\" n\n",l);
-				for(i=0;i<theNetwork->verticesCount;i++){
-					CVSymmetryOutputParameters* vertexOutput = outputArray[i];
-					fprintf(outputFile,"%.6g\n",vertexOutput->normalizedBackboneAccessibility[l]);
-				}
-				
-				fprintf(outputFile, "#v \"Merged Symmetry h=%"CVIndexScan"\" n\n",l);
-				for(i=0;i<theNetwork->verticesCount;i++){
-					CVSymmetryOutputParameters* vertexOutput = outputArray[i];
-					fprintf(outputFile,"%.6g\n",vertexOutput->normalizedMergedAccessibility[l]);
-				}
-				if(outputAccessed){
-					fprintf(outputFile, "#v \"Accessibility h=%"CVIndexScan"\" n\n",l);
-					for(i=0;i<theNetwork->verticesCount;i++){
-						CVSymmetryOutputParameters* vertexOutput = outputArray[i];
-						fprintf(outputFile,"%.6g\n",vertexOutput->backboneAccessibility[l]);
-					}
-				}
-				if(outputReachable){
-					fprintf(outputFile, "#v \"Reachable Nodes h=%"CVIndexScan"\" n\n",l);
-					for(i=0;i<theNetwork->verticesCount;i++){
-						CVSymmetryOutputParameters* vertexOutput = outputArray[i];
-						fprintf(outputFile,"%"CVSizeScan"\n",vertexOutput->accessedVertices[l]);
-					}
-				}
-				
-				if(outputProbabilities){
-					fprintf(outputFile, "#v \"Backbone Probabilities h=%"CVIndexScan"\" s\n",l);
-					for(i=0;i<theNetwork->verticesCount;i++){
-						CVSymmetryOutputParameters* vertexOutput = outputArray[i];
-						CVIndex concentricIndex;
-						fprintf(outputFile,"\"");
-						for (concentricIndex=0; concentricIndex<vertexOutput->accessedVertices[l]; concentricIndex++) {
-							if(concentricIndex){
-								fprintf(outputFile,", ");
-							}
-							fprintf(outputFile,"\"%"CVSizeScan":%.6g\"",vertexOutput->lastLevelIndices[l].data[concentricIndex], vertexOutput->backboneProbabilities[l].data[concentricIndex]);
-						}
-						fprintf(outputFile,"\"\n");
-					}
-					fprintf(outputFile, "#v \"Merged Probabilities h=%"CVIndexScan"\" s\n",l);
-					for(i=0;i<theNetwork->verticesCount;i++){
-						CVSymmetryOutputParameters* vertexOutput = outputArray[i];
-						CVIndex concentricIndex;
-						fprintf(outputFile,"\"");
-						for (concentricIndex=0; concentricIndex<vertexOutput->accessedVertices[l]; concentricIndex++) {
-							if(concentricIndex){
-								fprintf(outputFile,", ");
-							}
-							fprintf(outputFile,"\"%"CVSizeScan":%.6g\"",vertexOutput->lastLevelIndices[l].data[concentricIndex], vertexOutput->mergedProbabilities[l].data[concentricIndex]);
-						}
-						fprintf(outputFile,"\"\n");
-					}
-				}
-				
-				
-				if(outputBetweenness){
-					fprintf(outputFile, "#v \"Betweenness Centrality\"\n");
-					for(i=0;i<theNetwork->verticesCount;i++){
-						fprintf(outputFile, "%.6g\n",centrality.data[i]);
-					}
-				}
-				
-				if(outputStress){
-					fprintf(outputFile, "#v \"Stress Centrality\"\n");
-					for(i=0;i<theNetwork->verticesCount;i++){
-						fprintf(outputFile, "%.6g\n",stress.data[i]);
-					}
-				}
-				
-				if(outputDegree){
-					fprintf(outputFile, "#v \"Node Degree\"\n");
-					for(i=0;i<theNetwork->verticesCount;i++){
-						fprintf(outputFile, "%"CVSizeScan"\n",theNetwork->vertexNumOfEdges[i]);
-					}
-				}
-				
-				if(outputClusteringCoeff){
-					fprintf(outputFile, "#v \"Clustering Coefficient\"\n");
-					for(i=0;i<theNetwork->verticesCount;i++){
-						fprintf(outputFile, "%.6g\n",CVNetworkClusteringCoefficient(theNetwork,i));
-					}
-				}
-				
-				if(outputPatternDegree){
-					fprintf(outputFile, "#v \"Motif Average Degree\"\n");
-					for(i=0;i<theNetwork->verticesCount;i++){
-						fprintf(outputFile, "1.0f\n");
-					}
-				}
-				
-			}
-		}else if(exportCSV){
-			CVIndex l;
-			for (l=2; l<=level; l++) {
-				if(l>2){
-					fprintf(outputFile,"\t");
-				}
-				
-				fprintf(outputFile, "Backbone Symmetry h=%"CVIndexScan"\t",l);
-				fprintf(outputFile, "Merged Symmetry h=%"CVIndexScan,l);
-				
-				if(outputAccessed){
-					fprintf(outputFile,"\t");
-					fprintf(outputFile, "Accessed Nodes h=%"CVIndexScan,l);
-				}
-				if(outputReachable){
-					fprintf(outputFile,"\t");
-					fprintf(outputFile, "Reachable Nodes h=%"CVIndexScan,l);
-				}
-				
-				if(outputProbabilities){
-					fprintf(outputFile,"\t");
-					fprintf(outputFile, "Backbone Probabilities h=%"CVIndexScan,l);
-					fprintf(outputFile,"\t");
-					fprintf(outputFile, "Merged Probabilities h=%"CVIndexScan,l);
-				}
-			}
-			
-			if(outputBetweenness){
-				fprintf(outputFile,"\t");
-				fprintf(outputFile, "Betweenness Centrality");
-			}
-			
-			if(outputStress){
-				fprintf(outputFile,"\t");
-				fprintf(outputFile, "Stress Centrality");
-			}
-			
-			if(outputDegree){
-				fprintf(outputFile,"\t");
-				fprintf(outputFile, "Node Degree");
-			}
-			
-			if(outputClusteringCoeff){
-				fprintf(outputFile,"\t");
-				fprintf(outputFile, "Clustering Coefficient");
-			}
-			
-			if(outputPatternDegree){
-				fprintf(outputFile,"\t");
-				fprintf(outputFile, "Motif Average Degree");
-			}
-			
-			fprintf(outputFile,"\n");
-			
-			
-			for(i=0;i<theNetwork->verticesCount;i++){
-				CVSymmetryOutputParameters* vertexOutput = outputArray[i];
-				for (l=2; l<=level; l++) {
-					if(l>2){
-						fprintf(outputFile,"\t");
-					}
-					fprintf(outputFile,"%.6g\t",vertexOutput->normalizedBackboneAccessibility[l]);
-					fprintf(outputFile,"%.6g",vertexOutput->normalizedMergedAccessibility[l]);
-					if(outputAccessed){
-						fprintf(outputFile,"\t");
-						fprintf(outputFile,"%.6g",vertexOutput->backboneAccessibility[l]);
-					}
-					if(outputReachable){
-						fprintf(outputFile,"\t");
-						fprintf(outputFile,"%"CVSizeScan,vertexOutput->accessedVertices[l]);
-					}
-					
-					if(outputProbabilities){
-						fprintf(outputFile,"\t\"");
-						CVIndex concentricIndex;
-						//fprintf(outputFile,"");
-						for (concentricIndex=0; concentricIndex<vertexOutput->accessedVertices[l]; concentricIndex++) {
-							if(concentricIndex){
-								fprintf(outputFile,", ");
-							}
-							fprintf(outputFile,"%"CVSizeScan":%.6g",vertexOutput->lastLevelIndices[l].data[concentricIndex], vertexOutput->backboneProbabilities[l].data[concentricIndex]);
-						}
-						fprintf(outputFile,"\"\t\"");
-						//fprintf(outputFile,"");
-						for (concentricIndex=0; concentricIndex<vertexOutput->mergedAccessedVertices[l]; concentricIndex++) {
-							if(concentricIndex){
-								fprintf(outputFile,", ");
-							}
-							fprintf(outputFile,"%"CVSizeScan":%.6g",vertexOutput->lastLevelIndices[l].data[concentricIndex], vertexOutput->mergedProbabilities[l].data[concentricIndex]);
-						}
-						fprintf(outputFile,"\"");
-					}
-				}
-				
-				if(outputBetweenness){
-					fprintf(outputFile,"\t");
-					fprintf(outputFile, "%.6g",centrality.data[i]);
-				}
-				
-				if(outputStress){
-					fprintf(outputFile,"\t");
-					fprintf(outputFile, "%.6g",stress.data[i]);
-				}
-				
-				if(outputDegree){
-					fprintf(outputFile,"\t");
-					fprintf(outputFile, "%"CVSizeScan,theNetwork->vertexNumOfEdges[i]);
-				}
-				
-				if(outputClusteringCoeff){
-					fprintf(outputFile,"\t");
-					fprintf(outputFile, "%.6g",CVNetworkClusteringCoefficient(theNetwork,i));
-				}
-				
-				if(outputPatternDegree){
-					fprintf(outputFile,"\t");
-					fprintf(outputFile, "1.0f");
-				}
-				
-				fprintf(outputFile,"\n");
-			}
-		}
 	}
 	
 	if(verbose){
@@ -552,12 +284,7 @@ int CVSymmetryApplication(CVNetwork* theNetwork, int argc, char** argv, CVSymmet
 	if(verbose){
 		fprintf(verboseStream,"# Closing files...\n");
 	}
-	if(outputFile!=stdout){
-		fclose(outputFile);
-	}
-	if(networkFile!=stdin){
-		fclose(networkFile);
-	}
+	
 	if(verbose){
 		fprintf(verboseStream,"# Done!\n");
 	}

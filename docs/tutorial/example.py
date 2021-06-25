@@ -1,25 +1,25 @@
 import numpy as np
 import network_symmetry as ns
-# from tqdm.auto import tqdm 
 
-vertexCount = 10
-edges = np.random.randint(0,vertexCount,(vertexCount*4, 2))
-weights = np.random.random(size=vertexCount*4);
-names = ["ID %d"%i for i in range(vertexCount)]
+vertex_count = 10
+edges = np.array([(0, 1), (0, 2), (1, 2), (0, 3), (1, 3), (2, 3), (2, 4), (3, 4), (0, 4), (4, 5), (3, 5), (1, 5), (1, 6), (3, 6), (4, 6), (5, 7), (4, 7), (0, 7), (5, 8), (4, 8), (3, 8), (3, 9), (7, 9), (0, 9)])
+weights = np.random.random(size=edges.shape[0])
 
-measurer = ns.Measurer(vertexCount,edges,False,weights)
+directed = False
+measurer = ns.Network(vertex_count = vertex_count, edges = edges, directed = directed, weights= weights)
+h_max = 3
+measurer.set_parameters(h_max= h_max)
+measurer.compute_symmetry()
 
-# network = "/Users/henriqueferrazdearruda/Downloads/Symmetry/network_symmetry/Python/mechanics.xnet"
-l = measurer._compute("-c", "-M", "-l", "3", "-a", "", "", "", "", "", "", "", '', "output.tsv")
+print("Show summary:")
+measurer.show_summary()
 
-n_measures = len(l)//3
-out = {"Accessibility": dict(), "Symmetry Backbone": dict(), "Symmetry Merged": dict()}
-pos = 0
-for i in range(n_measures):
-    out["Accessibility"][i+2] = l[i + pos]
-    out["Symmetry Backbone"][i+2] = l[i + 1 + pos]
-    out["Symmetry Merged"][i+2] = l[i + 2 + pos]
-    pos += 1
-
-print (out)
-# print(result)
+print("\nResults:")
+for h in range(2,h_max+1):
+    print("h =", h)
+    print(" Accessibility:")
+    print(" ", measurer.get_accessibility(h))
+    print(" Symmetry (backbone):")
+    print(" ",measurer.get_symmetry_backbone(h))
+    print(" Symmetry (merged):")
+    print(" ",measurer.get_symmetry_merged(h))
