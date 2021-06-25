@@ -6,7 +6,7 @@ Travençolo, Bruno Augusto Nassif, and L. da F. Costa. "Accessibility in complex
 
 Silva, Filipi N., Cesar H. Comin, Thomas K. DM Peron, Francisco A. Rodrigues, Cheng Ye, Richard C. Wilson, Edwin R. Hancock, and Luciano da F. Costa. "Concentric network symmetry." Information Sciences 333 (2016): 61-80.
 
-If you use this code in a scientific study, please cite the respective references and this library. These codes have no warranty.
+If you use this code in a scientific study, please cite the respective references and this library.
 
 ## Install
 
@@ -15,7 +15,7 @@ Requires python headers and a C11 compatible compiler, such as gcc or clang.
 To install it, simply run:
 
 ```bash
-pip install network_symmetry
+pip install network-symmetry
 ```
 
 or clone this repository and install it from master by running:
@@ -119,3 +119,30 @@ If you publish a paper related to this material, please cite this repository and
 
 ## Acknowledgements
 Alexandre Benatti thanks Coordenação de Aperfeiçoamento de Pessoal de Nível Superior – Brasil (CAPES) – Finance Code (001) (grant no. 88882.328749/2019-01). Henrique F. de Arruda acknowledges FAPESP for sponsorship (grant no. 2018/10489-0). Luciano da F. Costa thanks CNPq (grant no. 307085/2018-0) and NAP-PRP-USP for sponsorship. This work has been supported also by FAPESP grant no. 2015/22308-2.
+
+## License
+This software is provided under the MIT license.
+
+```
+MIT License
+
+Copyright (c) 2020 network-accessibility
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```

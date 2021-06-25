@@ -2,6 +2,8 @@
 from setuptools import setup, Extension, Command
 import os.path
 import platform
+import setuptools
+
 enableParallelism = True
 
 extraOptions = []
@@ -31,17 +33,16 @@ class get_numpy_include(object):
         import numpy
         return numpy.get_include()
 
-import setuptools
-
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 building_on_windows = platform.system() == "Windows"
 
-packageName = "network_symmetry"
+packageName = "network-symmetry"
+packageDirectory = "network_symmetry"
 extensionPackageName = "network_symmetry_core"
 
-with open(os.path.join(packageName,"Python", "PyCXVersion.h"),"rt") as fd:
+with open(os.path.join(packageDirectory, "Python", "PyCXVersion.h"), "rt") as fd:
     version = fd.readline().strip().split(" ")[-1]
 
 print("Compiling version %s"%version)
@@ -73,21 +74,21 @@ setup(
         Extension(
             extensionPackageName,
             sources=[
-                os.path.join(packageName,"Source", "CVSimpleQueue.c"),
-                os.path.join(packageName,"Source", "CVSet.c"),
-                os.path.join(packageName,"Source", "CVNetwork.c"),
-                os.path.join(packageName,"Source", "CVDictionary.c"),
-                os.path.join(packageName,"Source", "CVDistribution.c"),
-                os.path.join(packageName,"Source", "fib.c"),
-                os.path.join(packageName,"Source", "CVNetworkSymmetry.c"),
-                os.path.join(packageName,"Source", "CVConcentricStructure.c"),
-                os.path.join(packageName,"Source", "CVNetworkCentrality.c"),
-                os.path.join(packageName,"Python", "PySymmetry.c"),
-                os.path.join(packageName,"Python", "CVSymmetryApplication.c"),
+                os.path.join(packageDirectory,"Source", "CVSimpleQueue.c"),
+                os.path.join(packageDirectory,"Source", "CVSet.c"),
+                os.path.join(packageDirectory,"Source", "CVNetwork.c"),
+                os.path.join(packageDirectory,"Source", "CVDictionary.c"),
+                os.path.join(packageDirectory,"Source", "CVDistribution.c"),
+                os.path.join(packageDirectory,"Source", "fib.c"),
+                os.path.join(packageDirectory,"Source", "CVNetworkSymmetry.c"),
+                os.path.join(packageDirectory,"Source", "CVConcentricStructure.c"),
+                os.path.join(packageDirectory,"Source", "CVNetworkCentrality.c"),
+                os.path.join(packageDirectory,"Python", "PySymmetry.c"),
+                os.path.join(packageDirectory,"Python", "CVSymmetryApplication.c"),
             ],
             include_dirs=[
-                os.path.join(packageName,"Source"),
-                os.path.join(packageName,"Python"),
+                os.path.join(packageDirectory,"Source"),
+                os.path.join(packageDirectory,"Python"),
                 get_numpy_include()
             ],
             extra_compile_args=[
