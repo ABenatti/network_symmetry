@@ -181,7 +181,7 @@ class Network():
             else:
                 print(key, "for h = 2")
 
-    def get_accessibility(self, h):
+    def accessibility(self, h):
         """
         Return the pre-calculated accessibility for a given h, computed in compute_symmetry().
 
@@ -203,7 +203,7 @@ class Network():
         return out
 
 
-    def get_symmetry_backbone(self, h):
+    def symmetry_backbone(self, h):
         """
         Return the pre-calculated Symmetry Backbone for a given h, computed in compute_symmetry().
 
@@ -224,7 +224,7 @@ class Network():
             print(key, "was not calculated for h =", h)
         return out
 
-    def get_symmetry_merged(self, h):
+    def symmetry_merged(self, h):
         """
         Return the pre-calculated Symmetry Merged for a given h, computed in compute_symmetry().
 

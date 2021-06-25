@@ -63,11 +63,11 @@ print("\nResults:")
 for h in range(2,h_max+1):
     print("h =", h)
     print(" Accessibility:")
-    print(" ", measurer.get_accessibility(h))
+    print(" ", measurer.accessibility(h))
     print(" Symmetry (backbone):")
-    print(" ",measurer.get_symmetry_backbone(h))
+    print(" ",measurer.symmetry_backbone(h))
     print(" Symmetry (merged):")
-    print(" ",measurer.get_symmetry_merged(h))
+    print(" ",measurer.symmetry_merged(h))
 ```
 
 ## API Documentation
@@ -104,9 +104,9 @@ Compute symmetries and accessibilities by using the parameters set in "set_param
 
 
 ```python
-accessibility = measurer.get_accessibility(h)
-symmetry_backbone = measurer.get_symmetry_backbone(h)
-symmetry_merged = measurer.get_symmetry_merged(h)
+accessibility = measurer.accessibility(h)
+symmetry_backbone = measurer.symmetry_backbone(h)
+symmetry_merged = measurer.symmetry_merged(h)
 ```
 - `h`- desired number of steps.
 These methods return the respective lists measurements. The order of measures in the lists follows the node orders.
