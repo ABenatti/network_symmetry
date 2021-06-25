@@ -1,3 +1,10 @@
+//
+//  CVMotifs.c
+//  CVNetwork
+//
+//  Created by Alexandre Benatti, Henrique Ferraz de Arruda, and Filipi Nascimento Silva on 25/06/21.
+//  Copyright (c) 2014 Filipi Nascimento Silva. All rights reserved.
+//
 #define PY_SSIZE_T_CLEAN
 #include "PyCXVersion.h"
 #include <CVDistribution.h>
@@ -233,13 +240,17 @@ PyObject *PyMeasurer_compute(PyMeasurer *self, PyObject *commandList){
 		}	
 	}
 	//Cleaning inputs
-	char **commandLine = malloc((size+1) * sizeof(char*));
-	commandLine[0] = "";
+	char **commandLine = calloc((size+1), sizeof(char*));
+	commandLine[0] = CVNewStringFromString("");
+
 	CVIndex pos = 0;
 	for (CVIndex i =0; i < commandListLength; i++){
-		if (strcmp(CVNewStringFromString((CVString)PyUnicode_AsUTF8(PySequence_Fast_GET_ITEM(commandList, i))), "") != 0){
-			commandLine[pos+1] = CVNewStringFromString((CVString)PyUnicode_AsUTF8(PySequence_Fast_GET_ITEM(commandList, i)));
+		CVString currentCommandString = CVNewStringFromString((CVString)PyUnicode_AsUTF8(PySequence_Fast_GET_ITEM(commandList, i)));
+		if (strcmp(currentCommandString, "") != 0){
+			commandLine[pos+1] = currentCommandString;
 			pos ++;
+		}else{
+			CVStringDestroy(currentCommandString);
 		}
 	}
 
@@ -309,12 +320,10 @@ PyObject *PyMeasurer_compute(PyMeasurer *self, PyObject *commandList){
 	free(results);
 
 	//Arruamr aqui
-	// printf("%d\n",size);
-	// for (CVIndex i=0; i < size; i++){
-	// 	CVStringDestroy(commandLine[i]);
-	// }
-	// printf("saiu");
-	free(&commandLine);
+	for (CVIndex i=0; i < size; i++){
+		CVStringDestroy(commandLine[i]);
+	}
+	free(commandLine);
 	
 	return (PyListObject*) pySymmetries;
 }
