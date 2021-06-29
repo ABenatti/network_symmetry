@@ -121,7 +121,7 @@ If you publish a paper related to this material, please cite this repository and
 Alexandre Benatti thanks Coordenação de Aperfeiçoamento de Pessoal de Nível Superior – Brasil (CAPES) – Finance Code (001) (grant no. 88882.328749/2019-01). Henrique F. de Arruda acknowledges FAPESP for sponsorship (grant no. 2018/10489-0). Luciano da F. Costa thanks CNPq (grant no. 307085/2018-0) and NAP-PRP-USP for sponsorship. This work has been supported also by FAPESP grant no. 2015/22308-2.
 
 ## License
-This software is provided under the MIT license.
+This software under the following license.
 
 ```
 Copyright (c) 2021 network-accessibility
