@@ -124,19 +124,16 @@ Alexandre Benatti thanks Coordenação de Aperfeiçoamento de Pessoal de Nível 
 This software is provided under the MIT license.
 
 ```
-MIT License
+Copyright (c) 2021 network-accessibility
 
-Copyright (c) 2020 network-accessibility
+network-accessibility (c) by Alexandre Benatti, Henrique Ferra de Arruda
+Filipi Nascimento Silva, and Luciano da Fontoura Costa
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+network-accessibility is licensed under a
+Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+You should have received a copy of the license along with this
+work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>. 
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
