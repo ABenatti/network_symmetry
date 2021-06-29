@@ -126,7 +126,7 @@ This software under the following license.
 ```
 Copyright (c) 2021 network-accessibility
 
-network-accessibility (c) by Alexandre Benatti, Henrique Ferra de Arruda
+network-accessibility (c) by Alexandre Benatti, Henrique Ferraz de Arruda
 Filipi Nascimento Silva, and Luciano da Fontoura Costa
 
 network-accessibility is licensed under a
