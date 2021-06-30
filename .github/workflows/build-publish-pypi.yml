@@ -57,7 +57,7 @@ jobs:
         name: Install Python
 
       - name: Install cibuildwheel
-        run: python -m pip install numpy cibuildwheel==1.7.4
+        run: python -m pip install numpy==1.20.3 cibuildwheel==1.7.4
 
       - name: Build wheels
         run: python -m cibuildwheel --output-dir dist
