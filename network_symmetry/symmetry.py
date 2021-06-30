@@ -17,7 +17,7 @@ class Network():
             Undirected network (False) or directed network (True). False by default.
         
         weights: numpy array, optional
-            Edge weights, with the lenth of # of edges. The default value is weights = None.
+            Edge weights, with the length of the edge list. The default value is weights = None.
     """
 
     def __init__(self, vertex_count = None, edges = None, directed = False, weights = None):
@@ -36,7 +36,7 @@ class Network():
         Parameters
         ----------
             vertex_count : integer
-                 Number of network vertices.
+                Number of network vertices.
                  
             edges : numpy array 
                 Array of the graph edges, with the shape of (# of edges, 2).
@@ -45,7 +45,7 @@ class Network():
                 Undirected network (False) or directed network (True).
 
             weights: numpy array, optional
-                Edge weights, with the length of # of edges. The default value is weights = None.
+                Edge weights, with the length of the edge list. The default value is weights = None.
         """
 
         self.vertex_count = vertex_count
@@ -63,9 +63,9 @@ class Network():
         """
         return {"vertex_count": self.vertex_count, "edges": self.edges, "weights": self.weights}
 
-    def clean_network(self):
+    def clear_network(self):
         """
-        Clean network data.
+        Clear network data.
         """
         self.edges = []
         self.weights = []
@@ -88,7 +88,7 @@ class Network():
         Parameters
         ----------
         h_max: integer
-            Compute all symmetries and accessibilities for h=2 to h_max, which must be greater or equals to 2. The default value is h_max = 2.
+            Compute all symmetries and accessibilities for h=2 to h_max, which must be greater or equal to 2. The default value is h_max = 2.
 
         merge_last_level: boolean
             Merge the last level. True by default.
@@ -97,7 +97,7 @@ class Network():
             Stream the output as results are obtained. Note that the results may be out of order. False by default.
 
         parallel_jobs: integer
-            The number of parallel jobs, which must be greater or equals to 1. The default value is parallel_jobs = 1.
+            The number of parallel jobs, which must be greater or equal to 1. The default value is parallel_jobs = 1.
 
         verbose: boolean
             If True, shows the calculation steps. False by default.
@@ -192,7 +192,7 @@ class Network():
         
         Return
         ----------
-        Numpy array with the accessibity of each network node.
+        Numpy array containing the accessibity of each network node.
         """
         key = "Accessibility"
         out = None
@@ -214,7 +214,7 @@ class Network():
         
         Return
         ----------
-        List with the Symmetry Backbone of each network node.
+        List containing the Symmetry Backbone of each network node.
         """
         key = "Symmetry Backbone"
         out = None
@@ -235,7 +235,7 @@ class Network():
         
         Return
         ----------
-        List with the Symmetry Merged of each network node.
+        List containing the Symmetry Merged of each network node.
         """
         key = "Symmetry Merged"
         out = None
