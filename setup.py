@@ -51,8 +51,8 @@ print("Compiling version %s"%version)
 setup(
     name=packageName,
     version=version,
-    author="Filipi N. Silva, Alexandre Benatti, and Henrique F. Arruda",
-    author_email="filsilva@iu.edu, alexandre.benatti@usp.br, and h.f.arruda@gmail.com",
+    author="Filipi N. Silva, Alexandre Benatti, Henrique F. Arruda",
+    author_email="filsilva@iu.edu, alexandre.benatti@usp.br, h.f.arruda@gmail.com",
     compiler = "mingw32" if building_on_windows else None,
     setup_requires=["wheel","numpy"],
     description="Library to compute accessibility and symmetry in networks",
