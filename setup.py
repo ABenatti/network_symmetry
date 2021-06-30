@@ -3,6 +3,8 @@ from setuptools import setup, Extension, Command
 import os.path
 import platform
 import setuptools
+import sys
+print("Building on:", sys.version)
 
 enableParallelism = True
 
