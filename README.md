@@ -72,7 +72,11 @@ for h in range(2,h_max+1):
 
 ## API Documentation
 ```python
-measurer = ns.Network(vertex_count = vertex_count, edges = edges, directed = directed, weights= weights)
+measurer = ns.Network(vertex_count = vertex_count, 
+                      edges = edges, 
+                      directed = directed, 
+                      weights= weights
+                      )
 ```
 - `vertex_count` - number of vertices in the network;
 - `edges` - list of edges;
