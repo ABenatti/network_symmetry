@@ -68,7 +68,7 @@ setup(
             "Operating System :: POSIX :: Linux",
             "Development Status :: 3 - Alpha",
             "Programming Language :: C",
-            "Topic :: Scientific/Engineering :: Network measurementes",
+            "Topic :: Scientific/Engineering :: Information Analysis",
             "Intended Audience :: Science/Research"
     ],
     python_requires='>=3.6',
