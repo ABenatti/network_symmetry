@@ -43,7 +43,11 @@ directed = False
 Step 3: Load the network data in an measurer object
 
 ```python
-measurer = ns.Network(vertex_count = vertex_count, edges = edges, directed = directed, weights = weights)
+measurer = ns.Network(vertex_count = vertex_count, 
+                      edges = edges, 
+                      directed = directed, 
+                      weights = weights
+                      )
 ```
 
 Step 4: Set the parameters use:
