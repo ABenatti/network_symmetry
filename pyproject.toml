@@ -1,0 +1,5 @@
+[build-system]
+requires = [
+    "numpy>=1.18;",
+    "oldest-supported-numpy;",
+]
