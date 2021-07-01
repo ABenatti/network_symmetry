@@ -1,4 +1,4 @@
-from network_symmetry_core import *
+from network_symmetry_core import Measurer
 import numpy as np
 
 class Network():
