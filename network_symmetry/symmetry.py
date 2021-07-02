@@ -133,8 +133,10 @@ class Network():
         """
         This method computes the symmetries and accessibilities by considering all the parameters previously set (see set_parameters).
         """
-        measurer = Measurer(self.vertex_count,self.edges,self.directed,self.weights)
-        
+        if np.shape(self.weights) == (): #no weights used
+            measurer = Measurer(self.vertex_count,self.edges,self.directed)
+        else:
+            measurer = Measurer(self.vertex_count,self.edges,self.directed,self.weights)
         h_max = str(self.parameters['h-max'])
         m = ""
         if self.parameters["merge-last-level"]:
