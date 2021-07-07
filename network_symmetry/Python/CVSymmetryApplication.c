@@ -69,7 +69,7 @@ int CVSymmetryApplication(CVNetwork* theNetwork, int argc, char** argv, CVSymmet
 	
 	CVInteger level = 2;
 	CVBool verbose = CVFalse;
-	CVBool quiet = CVFalse;
+	CVBool quiet = CVTrue;
 	CVBool liveStream = CVFalse;
 	CVBool forceShowStatus = CVFalse;
 	CVBool inputSTDIN = CVFalse;
