@@ -75,6 +75,7 @@ for h in range(2,h_max+1):
     print(" Symmetry (merged):")
     print(" ",measurer.symmetry_merged(h))
 ```
+**Important:** In order to be faster, this version of accessibility considers a random walk in which the walker cannot return to the already visited nodes.
 
 ## API Documentation
 ```python
