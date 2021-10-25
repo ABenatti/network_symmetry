@@ -2,11 +2,13 @@
 
 Fast library written in C for python to calculate network Accessibility and Symmetry. More information regarding these measurements are described in the papers listed as follows:
 
-Travençolo, Bruno Augusto Nassif, and L. da F. Costa. "Accessibility in complex networks." Physics Letters A 373, no. 1 (2008): 89-95.
+[Travençolo, Bruno Augusto Nassif, and L. da F. Costa. "Accessibility in complex networks." Physics Letters A 373, no. 1 (2008): 89-95.](https://doi.org/10.1016/j.physleta.2008.10.069)
 
-Silva, Filipi N., Cesar H. Comin, Thomas K. DM Peron, Francisco A. Rodrigues, Cheng Ye, Richard C. Wilson, Edwin R. Hancock, and Luciano da F. Costa. "Concentric network symmetry." Information Sciences 333 (2016): 61-80.
+[Silva, Filipi N., Cesar H. Comin, Thomas K. DM Peron, Francisco A. Rodrigues, Cheng Ye, Richard C. Wilson, Edwin R. Hancock, and Luciano da F. Costa. "Concentric network symmetry." Information Sciences 333 (2016): 61-80.](https://arxiv.org/abs/1407.0224)
 
 If you use this code in a scientific study, please cite the respective references and this library.
+
+A comprehensive guide to the theory and applications of the accessibility measurements is available from: [Benatti, Alexandre, and Luciano da F. Costa. "Accessibility: Generalizing the Node Degree (A Tutorial)." (2021).](https://www.researchgate.net/publication/355081440_Accessibility_Generalizing_the_Node_Degree_CDT-62)
 
 ## Install
 
