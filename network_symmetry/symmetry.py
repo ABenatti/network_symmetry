@@ -108,13 +108,13 @@ class Network():
         
         if int(h_max) < 2:
             h_max = 2
-            print("h_max must be greater or equals to 2!")
+            print("h_max must be greater or equal to 2!")
         self.parameters["h-max"] = int(h_max)
         self.parameters["merge-last-level"] = merge_last_level
         self.parameters["live-stream"] = live_stream
         if int(parallel_jobs) < 1:
             parallel_jobs = 1
-            print("parallel_jobs must be greater or equals to 1!")
+            print("parallel_jobs must be greater or equal to 1!")
         self.parameters["parallel-jobs"] = int(parallel_jobs)
         self.parameters["verbose"] = verbose
         self.parameters["show-status"] = show_status
