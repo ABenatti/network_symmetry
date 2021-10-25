@@ -1,6 +1,6 @@
 # Network symmetry
 
-Fast library written in C for python to calculate network Accessibility and Symmetry. More information regarding these measurements are described in the papers listed as follows:
+Fast library, written in C for python to calculate network Accessibility and Symmetry. More information regarding these measurements are described in the papers listed as follows:
 
 [Travençolo, Bruno Augusto Nassif, and L. da F. Costa. "Accessibility in complex networks." Physics Letters A 373, no. 1 (2008): 89-95.](https://doi.org/10.1016/j.physleta.2008.10.069)
 
@@ -33,16 +33,18 @@ import numpy as np
 import network_symmetry as ns
 ```
 
-Step 2: Convert network to a edgelist and a list of weights (optional)
+Step 2: Convert network to an edge list and a list of weights (optional)
 
 ```python
 vertex_count = 10
-edges = np.array([(0, 1), (0, 2), (1, 2), (0, 3), (1, 3), (2, 3), (2, 4), (3, 4), (0, 4), (4, 5), (3, 5), (1, 5), (1, 6), (3, 6), (4, 6), (5, 7), (4, 7), (0, 7), (5, 8), (4, 8), (3, 8), (3, 9), (7, 9), (0, 9)])
+edges = np.array([(0, 1), (0, 2), (1, 2), (0, 3), (1, 3), (2, 3), (2, 4), (3, 4), (0, 4),
+                  (4, 5), (3, 5), (1, 5), (1, 6), (3, 6), (4, 6), (5, 7), (4, 7), (0, 7), 
+                  (5, 8), (4, 8), (3, 8), (3, 9), (7, 9), (0, 9)])
 weights = np.random.random(size=edges.shape[0])
 directed = False
 ```
 
-Step 3: Load the network data in an measurer object
+Step 3: Load the network data in a measurer object
 
 ```python
 measurer = ns.Network(vertex_count = vertex_count, 
@@ -52,13 +54,13 @@ measurer = ns.Network(vertex_count = vertex_count,
                       )
 ```
 
-Step 4: Set the parameters use:
+Step 4: Set the parameters:
 ```python
 h_max = 3
 measurer.set_parameters(h_max= h_max)
 ```
 
-Step 5: Calculate the measurements use: 
+Step 5: Calculate the measurements: 
 ```python
 measurer.compute_symmetry()
 ```
@@ -100,10 +102,10 @@ measurer.set_parameters(h_max = 2,
                         show_status = True
                         )
 ```
-- `h_max` - Compute all symmetries and accessibilities for h=2 to h_max, which must be greater or equals to 2;
+- `h_max` - Compute all symmetries and accessibilities for h=2 to h_max, which must be greater or equal to 2;
 - `merge_last_level` - Merge the last level. True by default;
 - `live_stream` - Stream the output as results are obtained. Note that the results may be out of order;
-- `parallel_jobs` - The number of parallel jobs, which must be greater or equals to 1; 
+- `parallel_jobs` - The number of parallel jobs, which must be greater or equal to 1; 
 - `verbose` - If True, shows the calculation steps;
 - `show_status` - If True, show the progress of the calculation.
 
@@ -132,7 +134,7 @@ If you publish a paper related to this material, please cite this repository and
 Alexandre Benatti thanks Coordenação de Aperfeiçoamento de Pessoal de Nível Superior – Brasil (CAPES) – Finance Code (001) (grant no. 88882.328749/2019-01). Henrique F. de Arruda acknowledges FAPESP for sponsorship (grant no. 2018/10489-0). Luciano da F. Costa thanks CNPq (grant no. 307085/2018-0) and NAP-PRP-USP for sponsorship. This work has been supported also by FAPESP grant no. 2015/22308-2.
 
 ## License
-This software under the following license.
+This software is under the following license.
 
 ```
 Copyright (c) 2021 network-accessibility
