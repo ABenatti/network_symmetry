@@ -6,6 +6,10 @@ Fast library, written in C for python to calculate network Accessibility and Sym
 
 [Silva, Filipi N., Cesar H. Comin, Thomas K. DM Peron, Francisco A. Rodrigues, Cheng Ye, Richard C. Wilson, Edwin R. Hancock, and Luciano da F. Costa. "Concentric network symmetry." Information Sciences 333 (2016): 61-80.](https://arxiv.org/abs/1407.0224)
 
+For the generalized accessibility, the following paper is used:
+
+[De Arruda, G. F., Barbieri, A. L., Rodriguez, P. M., Rodrigues, F. A., Moreno, Y., & da Fontoura Costa, L. Role of centrality for the identification of influential spreaders in complex networks. Physical Review E, 90(3) (2014), 032812.](https://arxiv.org/abs/1404.4528)
+
 If you use this code in a scientific study, please cite the respective references and this library.
 
 A comprehensive guide to the theory and applications of the accessibility measurements is available from: [Benatti, Alexandre, and Luciano da F. Costa. "Accessibility: Generalizing the Node Degree (A Tutorial)." (2021).](https://www.researchgate.net/publication/355081440_Accessibility_Generalizing_the_Node_Degree_CDT-62)
@@ -63,6 +67,7 @@ measurer.set_parameters(h_max= h_max)
 Step 5: Calculate the measurements: 
 ```python
 measurer.compute_symmetry()
+generalized_accessibility = measurer.accessibility_generalized()
 ```
 
 Step 6: The outputs can be seen as follows.
@@ -76,6 +81,9 @@ for h in range(2,h_max+1):
     print(" ",measurer.symmetry_backbone(h))
     print(" Symmetry (merged):")
     print(" ",measurer.symmetry_merged(h))
+
+print(" Generalized accessibility:")
+print(" ", generalized_accessibility)
 ```
 **Important:** In order to be faster, this version of accessibility considers a random walk in which the walker cannot return to the already visited nodes.
 

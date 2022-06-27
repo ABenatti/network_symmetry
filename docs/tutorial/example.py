@@ -23,3 +23,7 @@ for h in range(2,h_max+1):
     print(" ",measurer.symmetry_backbone(h))
     print(" Symmetry (merged):")
     print(" ",measurer.symmetry_merged(h))
+
+print(" Generalized accessibility:")
+generalized_accessibility = measurer.accessibility_generalized()
+print(" ", generalized_accessibility)
