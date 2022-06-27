@@ -1,5 +1,6 @@
 from network_symmetry_core import Measurer
 import numpy as np
+import scipy.linalg as lin
 
 class Network():
     """
@@ -204,6 +205,36 @@ class Network():
             print(key, "was not calculated for h =", h)
         return out
 
+    def accessibility_generalized(self):
+        """
+        Calculated generalized accessibility.
+        This measurement is calculated considering the network as undirected.
+
+        Return
+        ----------
+        Numpy array containing the accessibity of each network node.
+        """
+        adj_matrix = np.zeros([self.vertex_count, self.vertex_count])
+        edge_weights = self.weights
+        if edge_weights is None:
+            edge_weights = np.ones(len(self.edges))
+
+        for i,edge in enumerate(self.edges):
+            adj_matrix[edge[0],edge[1]] = edge_weights[i]
+            adj_matrix[edge[1],edge[0]] = edge_weights[i]
+        
+        p1 = np.zeros([self.vertex_count,self.vertex_count], dtype = np.double)
+        for i in range(self.vertex_count):
+            p1[i,:] = np.array(adj_matrix[i,:])/np.sum(adj_matrix[i,:])
+
+        p = lin.expm(p1)/np.e
+        out = np.zeros(self.vertex_count, dtype = np.double)
+        double_epsilon = np.finfo(np.double).eps
+        for i in range(self.vertex_count):
+            p[i,p[i,:]<double_epsilon] = 1 # because np.log(1) == 0 and 0*log(0) should be 0
+            out[i] = np.exp(-np.sum(p[i,:] * np.log(p[i,:])))
+
+        return out
 
     def symmetry_backbone(self, h):
         """
