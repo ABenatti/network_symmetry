@@ -11,7 +11,7 @@
 #include <CVNetwork.h>
 #include <CVSet.h>
 #include <Python.h>
-#include <pthread.h>
+// #include <pthread.h>
 #include <CVConcentricStructure.h>
 #include <CVNetworkSymmetry.h>
 #include <getopt.h>
