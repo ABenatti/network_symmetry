@@ -76,30 +76,30 @@ void CVDestroyDistribution(CVDistribution* distribution){
 }
 
 
-void CVTestDistribution(){
-	const CVInteger nnn = 1000;
+// void CVTestDistribution(){
+// 	const CVInteger nnn = 1000;
 	
-	CVFloat probs[nnn];
-	CVInteger freqs[nnn];
+// 	CVFloat probs[nnn];
+// 	CVInteger freqs[nnn];
 	
-	CVInteger m;
-	for(m=0;m<nnn;m++){
-		probs[m] = expf(-(m-500.0)*(m-500.0)/200.0/200.0);
-		freqs[m] = 0;
-	}
+// 	CVInteger m;
+// 	for(m=0;m<nnn;m++){
+// 		probs[m] = expf(-(m-500.0)*(m-500.0)/200.0/200.0);
+// 		freqs[m] = 0;
+// 	}
 	
-	CVDistribution* distrib = CVCreateDistribution(probs, NULL, nnn);
+// 	CVDistribution* distrib = CVCreateDistribution(probs, NULL, nnn);
 	
-	CVRandomSeedDev();
+// 	CVRandomSeedDev();
 	
-	CVSize reps = 50000000;
-	for(m=0;m<reps;m++){
-		CVInteger index = CVDistributionRandomIndex(distrib);
-		freqs[index]++;
-	}
+// 	CVSize reps = 50000000;
+// 	for(m=0;m<reps;m++){
+// 		CVInteger index = CVDistributionRandomIndex(distrib);
+// 		freqs[index]++;
+// 	}
 	
-	for(m=0;m<distrib->count;m++){
-		printf("%g\t%10g\n", m/(double)(distrib->count-1), freqs[m]/(double)reps);
-	}
-}
+// 	for(m=0;m<distrib->count;m++){
+// 		printf("%g\t%10g\n", m/(double)(distrib->count-1), freqs[m]/(double)reps);
+// 	}
+// }
 
