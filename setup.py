@@ -43,6 +43,10 @@ with open("README.md", "r") as fh:
 
 building_on_windows = platform.system() == "Windows"
 
+if(building_on_windows):
+    print("Building on WINDOWS")
+
+
 packageName = "network-symmetry"
 packageDirectory = "network_symmetry"
 extensionPackageName = "network_symmetry_core"
