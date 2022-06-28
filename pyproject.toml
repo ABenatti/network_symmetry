@@ -1,4 +1,4 @@
 [build-system]
 requires = [
-    "wheel", "setuptools", "oldest-supported-numpy"
+    "wheel", "setuptools", "scipy", "oldest-supported-numpy"
 ]
