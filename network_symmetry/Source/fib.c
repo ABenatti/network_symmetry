@@ -28,7 +28,6 @@
  */
 
 #include "CVCommons.h"
-#include
 #include "fib.h"
 #include "fibpriv.h"
 

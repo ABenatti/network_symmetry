@@ -35,6 +35,7 @@ if(platform.system()=="Darwin"):
 elif(platform.system()=="Windows"):
     # extraOptions = ["-D WIN32 -lpthread"]
     extraOptions = ["/D WIN32"]
+    extraOptions = ["/D __WIN32__"]
     compilerOptions = [
                 "/std:c11",
                 "/Wall",
