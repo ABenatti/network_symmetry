@@ -20,7 +20,6 @@
 #include <time.h>
 #include <ctype.h>
 #include <stdarg.h>
-#include <strings.h>
 
 
 #if __LP64__ || _WIN64 || NS_BUILD_32_LIKE_64
