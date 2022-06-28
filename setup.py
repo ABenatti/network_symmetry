@@ -6,8 +6,8 @@ import setuptools
 import sys
 print("Building on:", sys.version)
 
-with open("requirements.txt", "r") as fh:
-   requirements = fh.readlines()
+with open("requirements.txt", "r", encoding="utf8") as fh:
+    requirements = fh.readlines()
 
 enableParallelism = True
 
@@ -58,7 +58,7 @@ setup(
     author_email="filsilva@iu.edu, alexandre.benatti@usp.br, h.f.arruda@gmail.com",
     compiler = "mingw32" if building_on_windows else None,
     install_requires=[req for req in requirements if req[:2] != "# "],
-    setup_requires=["wheel","numpy"],
+    setup_requires=["wheel","numpy","scipy"],
     description="Library to compute accessibility and symmetry in networks",
     long_description=long_description,
     long_description_content_type="text/markdown",
