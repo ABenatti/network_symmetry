@@ -34,11 +34,11 @@ if(platform.system()=="Darwin"):
         extraOptions += ["-DCV_USE_LIBDISPATCH=1"]
 elif(platform.system()=="Windows"):
     # extraOptions = ["-D WIN32 -lpthread"]
-    extraOptions = ["\D WIN32"]
+    extraOptions = ["/D WIN32"]
     compilerOptions = [
-                "\std:c11",
-                "\Wall",
-                "\O2",
+                "/std:c11",
+                "/Wall",
+                "/O2",
                 # "-funroll-loops",
                 # "-fstrict-aliasing"
             ]
@@ -46,8 +46,8 @@ elif(platform.system()=="Windows"):
         # extraOptions += ["-DCV_USE_OPENMP=1","-fopenmp"]
         extraLinkOptions+=["-lgomp"]
         # extraLinkOptions+=["-lgomp"]
-        extraLinkOptions+=["\D CV_USE_OPENMP=1"]
-        extraLinkOptions+=["\openmp"]
+        extraLinkOptions+=["/D CV_USE_OPENMP=1"]
+        extraLinkOptions+=["/openmp"]
 elif(platform.system()=="Linux"):
     extraOptions = ["-D Linux","-D_GNU_SOURCE=1"]
     if(enableParallelism):
