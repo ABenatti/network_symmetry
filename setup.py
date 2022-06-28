@@ -116,6 +116,7 @@ setup(
                 os.path.join(packageDirectory,"Source", "CVDictionary.c"),
                 os.path.join(packageDirectory,"Source", "CVDistribution.c"),
                 os.path.join(packageDirectory,"Source", "fib.c"),
+                os.path.join(packageDirectory,"Source", "getopt.c"),
                 os.path.join(packageDirectory,"Source", "CVNetworkSymmetry.c"),
                 os.path.join(packageDirectory,"Source", "CVConcentricStructure.c"),
                 os.path.join(packageDirectory,"Source", "CVNetworkCentrality.c"),
