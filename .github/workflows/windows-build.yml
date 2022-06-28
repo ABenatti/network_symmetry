@@ -25,6 +25,9 @@ jobs:
          auto-update-conda: true
          add-pip-as-python-dependency: true
          python-version: ${{ matrix.python-version }}
+     - name: Tell distutils to use mingw on Windows
+       if: ${{ runner.os == 'Windows' }}
+       run: echo "[build]`ncompiler=mingw32" | Out-File -Encoding ASCII ~/pydistutils.cfg
      - name: Installing required conda packages
        run: |
          conda install -c default -c anaconda -c msys2 numpy scipy libpython m2w64-toolchain
