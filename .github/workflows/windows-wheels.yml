@@ -12,13 +12,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
+      - name: Provide gfortran on Windows
+        if: ${{ runner.os == 'Windows' }}
+        uses: msys2/setup-msys2@v2
+      - name: Tell distutils to use mingw on Windows
+        if: ${{ runner.os == 'Windows' }}
+        run: echo "[build]`ncompiler=mingw32" | Out-File -Encoding ASCII ~/pydistutils.cfg
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.7.0
         # to supply options, put them in 'env', like:
         env:
           CIBW_SKIP: "cp27-* pp27-* cp35-* pp35-*"
-          CIBW_BEFORE_BUILD_WINDOWS: git clone https://github.com/Microsoft/vcpkg.git && .\vcpkg\bootstrap-vcpkg.bat && vcpkg install pthread && vcpkg install getopt && vcpkg integrate install
+          # CIBW_BEFORE_BUILD_WINDOWS: git clone https://github.com/Microsoft/vcpkg.git && .\vcpkg\bootstrap-vcpkg.bat && vcpkg install pthread && vcpkg install getopt && vcpkg integrate install
       - uses: actions/upload-artifact@v2
         with:
           path: ./wheelhouse/*.whl
