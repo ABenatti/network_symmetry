@@ -13,18 +13,41 @@ enableParallelism = True
 
 extraOptions = []
 extraLinkOptions=[]
+compilerOptions = [
+                # "-g",
+                "-std=c11",
+                # "-m64",
+                "-Wall",
+                "-Wno-unused-function",
+                "-Wno-deprecated-declarations",
+                "-Wno-sign-compare",
+                "-Wno-strict-prototypes",
+                "-Wno-unused-variable",
+                "-O3",
+                # "-fvisibility=hidden",
+                "-funroll-loops",
+                "-fstrict-aliasing"
+            ]
 if(platform.system()=="Darwin"):
     extraOptions = ["-D OSX"]
     if(enableParallelism):
         extraOptions += ["-DCV_USE_LIBDISPATCH=1"]
 elif(platform.system()=="Windows"):
-    extraOptions = ["-D WIN32 -lpthread"]
-    # extraOptions = ["\D WIN32"]
+    # extraOptions = ["-D WIN32 -lpthread"]
+    extraOptions = ["\D WIN32"]
+    compilerOptions = [
+                "\std:c11",
+                "\Wall",
+                "\O2",
+                # "-funroll-loops",
+                # "-fstrict-aliasing"
+            ]
     if(enableParallelism):
-        extraOptions += ["-DCV_USE_OPENMP=1","-fopenmp"]
+        # extraOptions += ["-DCV_USE_OPENMP=1","-fopenmp"]
         extraLinkOptions+=["-lgomp"]
         # extraLinkOptions+=["-lgomp"]
-        # extraLinkOptions+=["\openmp"]
+        extraLinkOptions+=["\D CV_USE_OPENMP=1"]
+        extraLinkOptions+=["\openmp"]
 elif(platform.system()=="Linux"):
     extraOptions = ["-D Linux","-D_GNU_SOURCE=1"]
     if(enableParallelism):
@@ -103,21 +126,7 @@ setup(
                 os.path.join(packageDirectory,"Python"),
                 get_numpy_include()
             ],
-            extra_compile_args=[
-                # "-g",
-                "-std=c11",
-                # "-m64",
-                "-Wall",
-                "-Wno-unused-function",
-                "-Wno-deprecated-declarations",
-                "-Wno-sign-compare",
-                "-Wno-strict-prototypes",
-                "-Wno-unused-variable",
-                "-O3",
-                # "-fvisibility=hidden",
-                "-funroll-loops",
-                "-fstrict-aliasing"
-            ]+extraOptions,
+            extra_compile_args=compilerOptions+extraOptions,
             extra_link_args=extraLinkOptions,
         ),
     ]
