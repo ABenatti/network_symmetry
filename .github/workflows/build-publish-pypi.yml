@@ -17,7 +17,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9"]
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -73,10 +73,10 @@ jobs:
 
   build-windows:
     name: Build WINDOWS wheels
-    runs-on: windows-latest
+    runs-on: windows-2019
     strategy:
       matrix:
-        python-version: ["3.6", "3.7", "3.8","3.9"]
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
     steps:
      - uses: actions/checkout@v1
      - uses: conda-incubator/setup-miniconda@v2
@@ -87,7 +87,7 @@ jobs:
          python-version: ${{ matrix.python-version }}
      - name: Installing required conda packages
        run: |
-         conda install -c default -c anaconda -c msys2 "numpy<=1.18" libpython m2w64-toolchain
+         conda install -c default -c anaconda -c msys2 "numpy<=1.18" scipy libpython m2w64-toolchain
      - name: Building for test
        run: |
          pip install -e .
@@ -108,7 +108,7 @@ jobs:
          ls -l ./dist
          
   upload_all:
-    needs: [build-macos, build-linux] #, build-windows]
+    needs: [build-macos, build-linux, build-windows]
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
