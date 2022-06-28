@@ -19,9 +19,12 @@ if(platform.system()=="Darwin"):
         extraOptions += ["-DCV_USE_LIBDISPATCH=1"]
 elif(platform.system()=="Windows"):
     extraOptions = ["-D WIN32 -lpthread"]
+    # extraOptions = ["\D WIN32"]
     if(enableParallelism):
         extraOptions += ["-DCV_USE_OPENMP=1","-fopenmp"]
         extraLinkOptions+=["-lgomp"]
+        # extraLinkOptions+=["-lgomp"]
+        # extraLinkOptions+=["\openmp"]
 elif(platform.system()=="Linux"):
     extraOptions = ["-D Linux","-D_GNU_SOURCE=1"]
     if(enableParallelism):
@@ -43,8 +46,7 @@ with open("README.md", "r") as fh:
 
 building_on_windows = platform.system() == "Windows"
 
-if(building_on_windows):
-    print("Building on WINDOWS")
+print("!!!!!Building on",platform.system(),"!!!!!!")
 
 
 packageName = "network-symmetry"
@@ -60,7 +62,7 @@ setup(
     version=version,
     author="Filipi N. Silva, Alexandre Benatti, Henrique F. Arruda",
     author_email="filsilva@iu.edu, alexandre.benatti@usp.br, h.f.arruda@gmail.com",
-    compiler = "mingw32" if building_on_windows else None,
+    # compiler = "mingw32" if building_on_windows else None,
     install_requires=[req for req in requirements if req[:2] != "# "],
     setup_requires=["wheel","numpy","scipy"],
     description="Library to compute accessibility and symmetry in networks",
