@@ -315,7 +315,7 @@ CV_INLINE CVUInteger CVRandom() {return random();}
 CV_INLINE CVInteger CVRandomInRange(CVInteger start,CVInteger length){return (CVInteger)start+(CVInteger)(random()%(length));}
 CV_INLINE CVFloat CVRandomFloat(){return (float)drand48();}
 #else
-#warning "Generic random"
+#pragma message ("warning: Generic random")
 CV_INLINE void CVRandomSeedDev(){srand(time(NULL));}
 CV_INLINE void CVRandomSeed(CVUInteger seed){srand((unsigned int)seed);}
 CV_INLINE CVUInteger CVRandom() {return rand();}
@@ -708,7 +708,8 @@ CV_INLINE void CVStringDestroy(CVString theString){
 CV_INLINE CVString CVNewStringByRemovingFileExtension(const CVString theString) {
 	CVString newString, lastExtensionSeparator, lastPathSeparator;
 #if __WIN32__
-#warning "Windows may need to use other separators, check this. FIXME"
+#pragma message ("warning: Windows may need to use other separators, check this. FIXME")
+// #warning "Windows may need to use other separators, check this. FIXME"
 	char extensionSeparator = '.';
 	char pathSeparator = '\\';
 #else
@@ -743,7 +744,8 @@ CV_INLINE CVString CVNewStringByRemovingFileExtension(const CVString theString) 
 CV_INLINE CVString CVNewStringFromPathExtension(const CVString theString) {
 	CVString newString, lastExtensionSeparator, lastPathSeparator;
 #if __WIN32__
-#warning "Windows may need to use other separators, check this. FIXME"
+#pragma message ("warning: Windows may need to use other separators, check this. FIXME")
+// #warning "Windows may need to use other separators, check this. FIXME"
 	char extensionSeparator = '.';
 	char pathSeparator = '\\';
 #else
@@ -957,7 +959,8 @@ dispatch_release(__##loopName##AsyncQueue);
 
 
 #elif CV_USE_OPENMP
-#warning "OPENMP ENABLED"
+// #warning "OPENMP ENABLED"
+#pragma message ("warning: OPENMP ENABLED")
 #include <omp.h>
 #define CV_USE_OPENMP 1
 #define CV_ENABLE_PARALLELISM 1
