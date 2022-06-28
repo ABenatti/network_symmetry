@@ -44,7 +44,7 @@ elif(platform.system()=="Windows"):
             ]
     if(enableParallelism):
         # extraOptions += ["-DCV_USE_OPENMP=1","-fopenmp"]
-        extraLinkOptions+=["-lgomp"]
+        # extraLinkOptions+=["-lgomp"]
         # extraLinkOptions+=["-lgomp"]
         extraLinkOptions+=["/D CV_USE_OPENMP=1"]
         extraLinkOptions+=["/openmp"]
