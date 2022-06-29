@@ -28,8 +28,9 @@ jobs:
             vcpkg update &&
             vcpkg install getopt-win32 &&
             vcpkg integrate install &&
-            Get-ChildItem env &&
-            $env:VCPKG_ROOT_DIR
+            printenv &&
+            dir %VCPKG_ROOT_DIR
+
           
       - uses: actions/upload-artifact@v2
         with:
