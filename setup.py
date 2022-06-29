@@ -140,6 +140,7 @@ setup(
             extra_compile_args=compilerOptions+extraOptions,
             extra_link_args=extraLinkOptions,
             library_dirs=extraLibraryPaths,
+            libraries = ["getopt"],
         ),
     ]
 )

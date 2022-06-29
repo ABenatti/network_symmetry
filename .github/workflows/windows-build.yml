@@ -13,24 +13,33 @@ on:
 jobs:
   build-windows:
     name: Build WINDOWS wheels
-    runs-on: windows-2019
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
     strategy:
       matrix:
-        python-version: ["3.6", "3.7", "3.8","3.9"]
+        python-version: ["3.6", "3.7", "3.8", "3.9"]
     steps:
      - uses: actions/checkout@v1
+     - uses: msys2/setup-msys2@v2
+       with:
+        update: true
+        path-type: inherit
+        install: mingw-w64-ucrt-x86_64-gcc
+                 mingw-w64-ucrt-x86_64-gcc-fortran
+                 mingw-w64-ucrt-x86_64-cmake
+     - run: echo "MSYSTEM=UCRT64" >> $GITHUB_ENV
+     - run: echo "MADX_VERSION=$(cat MADX_VERSION)" >> $GITHUB_ENV
      - uses: conda-incubator/setup-miniconda@v2
        with:
          miniconda-version: "latest"
          auto-update-conda: true
          add-pip-as-python-dependency: true
          python-version: ${{ matrix.python-version }}
-     - name: Tell distutils to use mingw on Windows
-       if: ${{ runner.os == 'Windows' }}
-       run: echo "[build]`ncompiler=mingw32" | Out-File -Encoding ASCII ~/pydistutils.cfg
      - name: Installing required conda packages
        run: |
-         conda install -c default -c anaconda -c msys2 numpy scipy libpython m2w64-toolchain
+         conda install -c default -c anaconda -c "numpy<=1.18" libpython
      - name: Building for test
        run: |
          pip install -e .
