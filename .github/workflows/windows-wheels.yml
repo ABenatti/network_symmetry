@@ -23,7 +23,12 @@ jobs:
         # to supply options, put them in 'env', like:
         env:
           CIBW_SKIP: "cp27-* pp27-* cp35-* pp35-*"
-          CIBW_BEFORE_BUILD_WINDOWS: vcpkg install getopt && vcpkg integrate install && vcpkg export getopt --raw && dir
+          # CIBW_BEFORE_BUILD_WINDOWS: vcpkg install getopt && vcpkg integrate install && vcpkg export getopt --raw && dir
+          CIBW_BEFORE_ALL_WINDOWS: >
+            vcpkg update &&
+            vcpkg install getopt-win32 &&
+            vcpkg integrate install
+          
       - uses: actions/upload-artifact@v2
         with:
           path: ./wheelhouse/*.whl
