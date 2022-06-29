@@ -964,11 +964,17 @@ dispatch_release(__##loopName##AsyncQueue);
 #include <omp.h>
 #define CV_USE_OPENMP 1
 #define CV_ENABLE_PARALLELISM 1
-
+#if __WIN32__
+#define CVParallelForStart(loopName, indexName, count) \
+CVInteger indexName; \
+_Pragma("omp parallel for") \
+for(indexName=0;indexName<count;indexName++)
+#else
 #define CVParallelForStart(loopName, indexName, count) \
 CVIndex indexName; \
 _Pragma("omp parallel for") \
 for(indexName=0;indexName<count;indexName++)
+#endif
 
 #define CVParallelForEnd(loopName) 
 
