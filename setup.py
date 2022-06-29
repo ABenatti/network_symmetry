@@ -5,6 +5,7 @@ import os
 import platform
 import setuptools
 import sys
+import glob
 print("Building on:", sys.version)
 
 with open("requirements.txt", "r", encoding="utf8") as fh:
@@ -13,6 +14,8 @@ with open("requirements.txt", "r", encoding="utf8") as fh:
 enableParallelism = True
 
 extraOptions = []
+extraLibraryPaths = []
+extraIncludesPaths = []
 extraLinkOptions=[]
 compilerOptions = [
                 # "-g",
@@ -50,6 +53,11 @@ elif(platform.system()=="Windows"):
         # extraLinkOptions+=["-lgomp"]
         extraOptions+=["/D CV_USE_OPENMP=1"]
         extraOptions+=["/openmp"]
+    
+    if("VCPKG_INSTALLATION_ROOT" in os.environ):
+        extraIncludesPaths += [os.path.join(os.environ["VCPKG_INSTALLATION_ROOT"], "installed", "x64-windows-static","include")]
+        extraLibraryPaths += [os.path.join(os.environ["VCPKG_INSTALLATION_ROOT"], "installed", "x64-windows-static","lib")]
+
 elif(platform.system()=="Linux"):
     extraOptions = ["-D Linux","-D_GNU_SOURCE=1"]
     if(enableParallelism):
@@ -80,10 +88,6 @@ extensionPackageName = "network_symmetry_core"
 
 with open(os.path.join(packageDirectory, "Python", "PyCXVersion.h"), "rt") as fd:
     version = fd.readline().strip().split(" ")[-1]
-
-extraIncludes = []
-if("VCPKG_INSTALLATION_ROOT" in os.environ):
-    extraIncludes += [os.path.join(os.environ["VCPKG_INSTALLATION_ROOT"], "installed", "include")]
 
 print("Compiling version %s"%version)
 setup(
@@ -132,9 +136,10 @@ setup(
                 os.path.join(packageDirectory,"Source"),
                 os.path.join(packageDirectory,"Python"),
                 get_numpy_include()
-            ],
+            ]+extraIncludesPaths,
             extra_compile_args=compilerOptions+extraOptions,
             extra_link_args=extraLinkOptions,
+            library_dirs=extraLibraryPaths,
         ),
     ]
 )
