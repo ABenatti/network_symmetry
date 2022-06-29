@@ -25,7 +25,7 @@
 
 #if CV_USE_OPENMP
 #include <omp.h>
-#endif //_OPENMP
+#endif //CV_USE_OPENMP
 
 static PyArrayObject * pyvector(PyObject *objin){
 	return (PyArrayObject *)PyArray_ContiguousFromObject(objin, NPY_FLOAT, 1, 1);

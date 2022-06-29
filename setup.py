@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from setuptools import setup, Extension, Command
 import os.path
+import os
 import platform
 import setuptools
 import sys
@@ -47,8 +48,8 @@ elif(platform.system()=="Windows"):
         # extraOptions += ["-DCV_USE_OPENMP=1","-fopenmp"]
         # extraLinkOptions += ["-lgomp"]
         # extraLinkOptions+=["-lgomp"]
-        extraLinkOptions+=["/D CV_USE_OPENMP=1"]
-        extraLinkOptions+=["/openmp"]
+        extraOptions+=["/D CV_USE_OPENMP=1"]
+        extraOptions+=["/openmp"]
 elif(platform.system()=="Linux"):
     extraOptions = ["-D Linux","-D_GNU_SOURCE=1"]
     if(enableParallelism):
@@ -79,6 +80,10 @@ extensionPackageName = "network_symmetry_core"
 
 with open(os.path.join(packageDirectory, "Python", "PyCXVersion.h"), "rt") as fd:
     version = fd.readline().strip().split(" ")[-1]
+
+extraIncludes = []
+if("VCPKG_INSTALLATION_ROOT" in os.environ):
+    extraIncludes += [os.path.join(os.environ["VCPKG_INSTALLATION_ROOT"], "installed", "include")]
 
 print("Compiling version %s"%version)
 setup(
@@ -116,13 +121,13 @@ setup(
                 os.path.join(packageDirectory,"Source", "CVDictionary.c"),
                 os.path.join(packageDirectory,"Source", "CVDistribution.c"),
                 os.path.join(packageDirectory,"Source", "fib.c"),
-                # os.path.join(packageDirectory,"Source", "getopt.c"),
                 os.path.join(packageDirectory,"Source", "CVNetworkSymmetry.c"),
                 os.path.join(packageDirectory,"Source", "CVConcentricStructure.c"),
                 os.path.join(packageDirectory,"Source", "CVNetworkCentrality.c"),
                 os.path.join(packageDirectory,"Python", "PySymmetry.c"),
                 os.path.join(packageDirectory,"Python", "CVSymmetryApplication.c"),
-            ],
+            ]#+[os.path.join(packageDirectory,"Source", "getopt_windows.c")]
+            ,
             include_dirs=[
                 os.path.join(packageDirectory,"Source"),
                 os.path.join(packageDirectory,"Python"),
