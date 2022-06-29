@@ -966,8 +966,9 @@ dispatch_release(__##loopName##AsyncQueue);
 #define CV_ENABLE_PARALLELISM 1
 
 #define CVParallelForStart(loopName, indexName, count) \
+CVIndex indexName; \
 _Pragma("omp parallel for") \
-for(CVIndex indexName=0;indexName<count;indexName++)
+for(indexName=0;indexName<count;indexName++)
 
 #define CVParallelForEnd(loopName) 
 
