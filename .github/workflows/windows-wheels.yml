@@ -31,7 +31,10 @@ jobs:
             printenv &&
             dir %VCPKG_ROOT_DIR
 
-          
+      - name: Setup tmate session
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+
       - uses: actions/upload-artifact@v2
         with:
           path: ./wheelhouse/*.whl
