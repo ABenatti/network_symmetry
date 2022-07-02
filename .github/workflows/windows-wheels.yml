@@ -30,10 +30,10 @@ jobs:
             vcpkg update &&
             vcpkg install getopt:x64-windows-static &&
             vcpkg integrate install
-
-      - name: Setup tmate session
-        if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3
+          CIBW_TEST_COMMAND: "python {project}/docs/tutorial/example.py"
+      # - name: Setup tmate session
+      #   if: ${{ failure() }}
+      #   uses: mxschmitt/action-tmate@v3
 
       - uses: actions/upload-artifact@v2
         with:
