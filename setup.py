@@ -130,8 +130,7 @@ setup(
                 os.path.join(packageDirectory,"Source", "CVNetworkCentrality.c"),
                 os.path.join(packageDirectory,"Python", "PySymmetry.c"),
                 os.path.join(packageDirectory,"Python", "CVSymmetryApplication.c"),
-            ]#+[os.path.join(packageDirectory,"Source", "getopt_windows.c")]
-            ,
+            ],
             include_dirs=[
                 os.path.join(packageDirectory,"Source"),
                 os.path.join(packageDirectory,"Python"),
@@ -140,7 +139,7 @@ setup(
             extra_compile_args=compilerOptions+extraOptions,
             extra_link_args=extraLinkOptions,
             library_dirs=extraLibraryPaths,
-            libraries = ["getopt"],
+            libraries = ["getopt"] if building_on_windows else [],
         ),
     ]
 )
