@@ -20,7 +20,6 @@
 #include <time.h>
 #include <ctype.h>
 #include <stdarg.h>
-#include <strings.h>
 
 
 #if __LP64__ || _WIN64 || NS_BUILD_32_LIKE_64
@@ -316,7 +315,7 @@ CV_INLINE CVUInteger CVRandom() {return random();}
 CV_INLINE CVInteger CVRandomInRange(CVInteger start,CVInteger length){return (CVInteger)start+(CVInteger)(random()%(length));}
 CV_INLINE CVFloat CVRandomFloat(){return (float)drand48();}
 #else
-#warning "Generic random"
+#pragma message ("warning: Generic random")
 CV_INLINE void CVRandomSeedDev(){srand(time(NULL));}
 CV_INLINE void CVRandomSeed(CVUInteger seed){srand((unsigned int)seed);}
 CV_INLINE CVUInteger CVRandom() {return rand();}
@@ -709,7 +708,8 @@ CV_INLINE void CVStringDestroy(CVString theString){
 CV_INLINE CVString CVNewStringByRemovingFileExtension(const CVString theString) {
 	CVString newString, lastExtensionSeparator, lastPathSeparator;
 #if __WIN32__
-#warning "Windows may need to use other separators, check this. FIXME"
+#pragma message ("warning: Windows may need to use other separators, check this. FIXME")
+// #warning "Windows may need to use other separators, check this. FIXME"
 	char extensionSeparator = '.';
 	char pathSeparator = '\\';
 #else
@@ -744,7 +744,8 @@ CV_INLINE CVString CVNewStringByRemovingFileExtension(const CVString theString) 
 CV_INLINE CVString CVNewStringFromPathExtension(const CVString theString) {
 	CVString newString, lastExtensionSeparator, lastPathSeparator;
 #if __WIN32__
-#warning "Windows may need to use other separators, check this. FIXME"
+#pragma message ("warning: Windows may need to use other separators, check this. FIXME")
+// #warning "Windows may need to use other separators, check this. FIXME"
 	char extensionSeparator = '.';
 	char pathSeparator = '\\';
 #else
@@ -958,14 +959,22 @@ dispatch_release(__##loopName##AsyncQueue);
 
 
 #elif CV_USE_OPENMP
-#warning "OPENMP ENABLED"
+// #warning "OPENMP ENABLED"
+#pragma message ("warning: OPENMP ENABLED")
 #include <omp.h>
 #define CV_USE_OPENMP 1
 #define CV_ENABLE_PARALLELISM 1
-
+#if __WIN32__
 #define CVParallelForStart(loopName, indexName, count) \
+CVInteger indexName; \
 _Pragma("omp parallel for") \
-for(CVIndex indexName=0;indexName<count;indexName++)
+for(indexName=0;indexName<count;indexName++)
+#else
+#define CVParallelForStart(loopName, indexName, count) \
+CVIndex indexName; \
+_Pragma("omp parallel for") \
+for(indexName=0;indexName<count;indexName++)
+#endif
 
 #define CVParallelForEnd(loopName) 
 

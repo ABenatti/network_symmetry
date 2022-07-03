@@ -28,7 +28,6 @@
  */
 
 #include "CVCommons.h"
-
 #include "fib.h"
 #include "fibpriv.h"
 
@@ -252,7 +251,7 @@ double
 fh_minkey(struct fibheap *h)
 {
 	if (h->fh_min == NULL)
-		return 1.0f/0.0f;
+		return INFINITY;
 	return h->fh_min->fhe_key;
 }
 

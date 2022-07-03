@@ -63,6 +63,6 @@ CV_INLINE CVFloat CVDistributionRandomValue(CVDistribution* distribution){
 	return CVDistributionValueForChoice(distribution, CVRandomFloat());
 }
 
-void CVTestDistribution();
+// void CVTestDistribution();
 
 #endif
