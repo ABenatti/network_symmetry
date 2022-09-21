@@ -8,11 +8,11 @@ Fast library, written in C for python to calculate network Accessibility and Sym
 
 For the generalized accessibility, the following paper is used:
 
-[De Arruda, G. F., Barbieri, A. L., Rodriguez, P. M., Rodrigues, F. A., Moreno, Y., & da Fontoura Costa, L. Role of centrality for the identification of influential spreaders in complex networks. Physical Review E, 90(3) (2014), 032812.](https://arxiv.org/abs/1404.4528)
+[de Arruda, G. F., Barbieri, A. L., Rodriguez, P. M., Rodrigues, F. A., Moreno, Y., & da Fontoura Costa, L. Role of centrality for the identification of influential spreaders in complex networks. Physical Review E, 90(3) (2014), 032812.](https://arxiv.org/abs/1404.4528)
 
-If you use this code in a scientific study, please cite the respective references and this library.
+A comprehensive guide to the theory and applications of the accessibility measurements is available from: [Benatti, Alexandre, and da F. Costa., Luciano "Accessibility: Generalizing the Node Degree (A Tutorial)." (2021).](https://www.researchgate.net/publication/355081440_Accessibility_Generalizing_the_Node_Degree_CDT-62)
 
-A comprehensive guide to the theory and applications of the accessibility measurements is available from: [Benatti, Alexandre, and Luciano da F. Costa. "Accessibility: Generalizing the Node Degree (A Tutorial)." (2021).](https://www.researchgate.net/publication/355081440_Accessibility_Generalizing_the_Node_Degree_CDT-62)
+If you use this code in a scientific study, please cite the respective references and this library, as: [Benatti, A., Silva, F. N., de Arruda, H. F., &  da F. Costa, L. "Complex Networks Accessibility and Symmetry." (2022).](https://www.researchgate.net/publication/362875004_Complex_Networks_Accessibility_and_Symmetry). 
 
 ## Install
 
