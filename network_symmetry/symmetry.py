@@ -208,11 +208,15 @@ class Network():
     def accessibility_generalized(self):
         """
         Calculated generalized accessibility.
-        This measurement is calculated considering the network as undirected.
+        This method can be executed for both weighted (with non-negative weights)
+        and directed networks.
+        For directed networks, we do not guarantee that the spectral characteristics of
+        the original formulation are maintained.
+        For the undirected networks, we symmetrized the adjacency matrix.
 
         Return
         ----------
-        Numpy array containing the accessibity of each network node.
+        Numpy array containing the accessibility of each network node.
         """
         adj_matrix = np.zeros([self.vertex_count, self.vertex_count])
         edge_weights = self.weights
@@ -221,13 +225,21 @@ class Network():
 
         for i,edge in enumerate(self.edges):
             adj_matrix[edge[0],edge[1]] = edge_weights[i]
-            adj_matrix[edge[1],edge[0]] = edge_weights[i]
+            if(not self.directed):
+                adj_matrix[edge[1],edge[0]] = edge_weights[i]
         
         p1 = np.zeros([self.vertex_count,self.vertex_count], dtype = np.double)
         for i in range(self.vertex_count):
-            p1[i,:] = np.array(adj_matrix[i,:])/np.sum(adj_matrix[i,:])
+            if(np.sum(adj_matrix[i,:])>0.):
+                p1[i,:] = np.array(adj_matrix[i,:])/np.sum(adj_matrix[i,:])
 
-        p = lin.expm(p1)/np.e
+        p = lin.expm(p1)
+        if(self.directed):
+            # if the network is strongly connected, the sum over the rows is e.
+            p/= p.sum(axis=1)[:,None]
+        else:
+            p/= np.e
+
         out = np.zeros(self.vertex_count, dtype = np.double)
         double_epsilon = np.finfo(np.double).eps
         for i in range(self.vertex_count):
