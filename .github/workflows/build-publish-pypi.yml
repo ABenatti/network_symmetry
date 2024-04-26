@@ -32,7 +32,7 @@ jobs:
               vcpkg integrate install
             CIBW_TEST_COMMAND: "python {project}/docs/tutorial/example.py"
         
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           path: ./wheelhouse/*.whl
 
