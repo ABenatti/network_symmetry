@@ -16,6 +16,8 @@ If you use this code in a scientific study, please cite the respective reference
 
 ## Install
 
+Network symmetry now supports NumPy 2 on Python 3.9 and newer.
+
 Requires python headers and a C11 compatible compiler, such as gcc or clang.
 
 To install it, simply run:
@@ -29,6 +31,14 @@ or clone this repository and install it from master by running:
 ```bash
 pip install git+https://github.com/ABenatti/network_symmetry.git
 ```
+
+### Compatibility and verification
+
+Builds use NumPy 2 headers on Python 3.9 and newer, with Python-specific minimum
+versions. Python 3.6–3.8 retain the legacy NumPy 1 dependency and source-build configuration. The wheel workflow targets Python 3.9–3.14 on Linux, Windows, and 
+macOS (Intel and Apple Silicon). This target matrix is distinct from the 
+combinations verified locally.
+
 ## Usage
 Step 1: Import the libraries
 

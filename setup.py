@@ -97,7 +97,6 @@ setup(
     author_email="filsilva@iu.edu, alexandre.benatti@usp.br, h.f.arruda@gmail.com",
     # compiler = "mingw32" if building_on_windows else None,
     install_requires=[req for req in requirements if req[:2] != "# "],
-    setup_requires=["wheel","numpy","scipy"],
     description="Library to compute accessibility and symmetry in networks",
     long_description=long_description,
     long_description_content_type="text/markdown",

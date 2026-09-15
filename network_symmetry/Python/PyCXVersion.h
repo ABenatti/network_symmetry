@@ -1,1 +1,1 @@
-#define k_PYCXVersion 0.4.2
+#define k_PYCXVersion 0.5.0

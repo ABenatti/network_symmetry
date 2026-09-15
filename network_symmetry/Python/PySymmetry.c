@@ -33,18 +33,18 @@ static PyArrayObject * pyvector(PyObject *objin){
 
 static PyArrayObject * convertToUIntegerArray(PyObject *object, int minDepth, int maxDepth) {
 	int flags = NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_ALIGNED;
-	return PyArray_FromAny(
+	return (PyArrayObject *)PyArray_FromAny(
 		object, PyArray_DescrFromType(NPY_UINT64), minDepth, maxDepth, flags, NULL);
 }
 static PyArrayObject * convertToIntegerArray(PyObject *object, int minDepth, int maxDepth){
 	int flags = NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_ALIGNED;
-	return PyArray_FromAny(
+	return (PyArrayObject *)PyArray_FromAny(
 		object, PyArray_DescrFromType(NPY_INT64), minDepth, maxDepth, flags, NULL);
 }
 
 static PyArrayObject * convertToDoubleArray(PyObject *object, int minDepth, int maxDepth){
 	int flags = NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_ALIGNED;
-	return PyArray_FromAny(object,
+	return (PyArrayObject *)PyArray_FromAny(object,
 							 PyArray_DescrFromType(NPY_FLOAT64),
 							 minDepth,
 							 maxDepth,
@@ -54,7 +54,7 @@ static PyArrayObject * convertToDoubleArray(PyObject *object, int minDepth, int 
 
 static PyArrayObject * convertToFloatArray(PyObject *object, int minDepth, int maxDepth){
 	int flags = NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_ALIGNED;
-	return PyArray_FromAny(object,
+	return (PyArrayObject *)PyArray_FromAny(object,
 							 PyArray_DescrFromType(NPY_FLOAT32),
 							 minDepth,
 							 maxDepth,
@@ -68,14 +68,14 @@ static PyArrayObject * convertToFloatArray(PyObject *object, int minDepth, int m
 static void * pyvector_to_Carrayptrs(PyArrayObject *arrayin){
 	int i, n;
 
-	n = arrayin->dimensions[0];
+	n = PyArray_DIM(arrayin, 0);
 	return PyArray_DATA(arrayin); /* pointer to arrayin data as double */
 }
 
 /* ==== Check that PyArrayObject is a double (Float) type and a vector
 				 ============== return 1 if an error and raise exception */
 static int not_floatvector(PyArrayObject *vec){
-	if (vec->descr->type_num != NPY_FLOAT) {
+	if (PyArray_TYPE(vec) != NPY_FLOAT) {
 		PyErr_SetString(PyExc_ValueError,
 						"In not_floatvector: array must be of "
 						"type Float and 1 dimensional (n).");
@@ -88,7 +88,7 @@ static int not_floatvector(PyArrayObject *vec){
 				 ============== return 1 if an error and raise exception */
 // FIXME: make it work for 32bits
 static int not_intvector(PyArrayObject *vec){
-	if (vec->descr->type_num != NPY_UINT64) {
+	if (PyArray_TYPE(vec) != NPY_UINT64) {
 		PyErr_SetString(
 			PyExc_ValueError,
 			"In not_intvector: array must be of type Long and 1 dimensional (n).");
@@ -262,12 +262,12 @@ PyObject *PyMeasurer_compute(PyMeasurer *self, PyObject *commandList){
 
 	CVSymmetryApplication(network, (int) size, commandLine, results, level_pointer);
 
-	PyListObject* pySymmetries = NULL;
+	PyObject* pySymmetries = NULL;
 	CVIndex numberOfLists = ((CVIndex) level-1) * 3;  
 
 	pySymmetries = PyList_New(numberOfLists);
 	
-	PyListObject* measurement = NULL;
+	PyObject* measurement = NULL;
 	CVIndex positionInList = 0;
 	CVSymmetryOutputParameters* vertexOutput = NULL;
 	
@@ -325,7 +325,7 @@ PyObject *PyMeasurer_compute(PyMeasurer *self, PyObject *commandList){
 	}
 	free(commandLine);
 	
-	return (PyListObject*) pySymmetries;
+	return pySymmetries;
 }
 
 static PyMethodDef PyMeasurer_methods[] = {

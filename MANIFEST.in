@@ -1,3 +1,5 @@
 include network_symmetry/Source/*.h
 include network_symmetry/Python/*.h
 include requirements.txt
+recursive-include tests *.py *.json
+include docs/tutorial/example.py
