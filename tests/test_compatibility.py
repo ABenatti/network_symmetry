@@ -1,11 +1,13 @@
-"""Regression checks against the original NumPy 1 implementation.
+"""Regression checks for original unweighted and corrected weighted metrics.
 
 Run against an installed package with:
     python -m unittest discover -s tests -v
 
-The baseline is an independent capture, not a recomputation of expected metrics.
-C metric comparisons are exact. Generalized accessibility uses the approved
-relative and absolute tolerances of 1e-14 for dependency-dependent roundoff.
+Unweighted C metrics retain the original NumPy 1 capture and exact comparisons.
+Weighted C snapshots were corrected after fixing edge-weight indexing and
+validated independently; comparisons allow single-precision C roundoff.
+Generalized accessibility retains the original capture and uses relative and
+absolute tolerances of 1e-14 for dependency-dependent roundoff.
 """
 
 import contextlib
@@ -59,10 +61,25 @@ class MetricRegressionTests(unittest.TestCase):
                     self.assertIsInstance(actual, list)
                     self.assertEqual(len(actual), case["vertex_count"])
                     self.assertTrue(all(isinstance(value, float) for value in actual))
-                    np.testing.assert_array_equal(actual, case["expected"][name][str(h)])
+                    expected = case["expected"][name][str(h)]
+                    if case["weights"] is None:
+                        np.testing.assert_array_equal(actual, expected)
+                    else:
+                        # Probabilities and outputs use CVFloat (float32).
+                        np.testing.assert_allclose(actual, expected, rtol=5e-7, atol=1e-7)
 
-    def test_concentric_metrics_match_original(self):
+    def test_unweighted_concentric_metrics_match_original(self):
         for case in BASELINE["cases"]:
+            if case["weights"] is not None:
+                continue
+            for representation in ("list", "int32", "int64", "strided"):
+                with self.subTest(case=case["name"], representation=representation):
+                    self.assert_metrics(make_network(case, representation), case)
+
+    def test_weighted_concentric_metrics_match_corrected_baseline(self):
+        for case in BASELINE["cases"]:
+            if case["weights"] is None:
+                continue
             for representation in ("list", "int32", "int64", "strided"):
                 with self.subTest(case=case["name"], representation=representation):
                     self.assert_metrics(make_network(case, representation), case)

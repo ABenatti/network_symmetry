@@ -67,6 +67,8 @@ void CVConcentricStructureDestroy(CVConcentricStructure* structure);
 
 typedef struct{
 	CVUIntegerArray edges;
+	// Original edge weights, in the same order as the merged destinations in edges.
+	CVFloatArray edgeWeights;
 	CVUIntegerArray edgesIndices;
 	//CVUIntegerArray levelsEdgesIndices;
 	

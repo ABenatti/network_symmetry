@@ -45,6 +45,29 @@
       "network_symmetry/Source/utstring.h": "3acafd0443f3119f37cfdf5cf7a24fcf0bc78f63cfdf4bed5f422fb11c72a41f",
       "network_symmetry/__init__.py": "5a7bafb6f8c3cc6b550f3ec31629aa0022f00c1ea8ee9b13f620332b58cf3163",
       "network_symmetry/symmetry.py": "aaf90806d83283b31eff18d504b364efa3f9a6df7fbd4e49f90727942d365e2f"
+    },
+    "weighted_correction": {
+      "reason": "Use original edge indices for backbone weights and preserve original edge weights through concentric merging.",
+      "scope": "Only the three C metrics in the listed weighted cases were recaptured. All unweighted cases and all generalized accessibility values retain the original capture above.",
+      "cases": [
+        "tutorial_weighted",
+        "directed_weighted",
+        "duplicates_and_self_loop"
+      ],
+      "metrics": [
+        "accessibility",
+        "symmetry_backbone",
+        "symmetry_merged"
+      ],
+      "validation": "Checked against an independent Python BFS, weighted probability propagation and entropy calculation; analytic regression examples are in tests/test_weights.py.",
+      "python": "3.13.1",
+      "numpy": "2.5.3",
+      "platform": "macOS-26.5.2-arm64-arm-64bit-Mach-O",
+      "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
+      "source_sha256": {
+        "network_symmetry/Source/CVConcentricStructure.c": "e89038aa7daa0a27e105252dc5ade14985a847fd2ff2ce2884e0fcead0453592",
+        "network_symmetry/Source/CVConcentricStructure.h": "cd063a9f2d2c8da767edace4712dc5dcd3cceffb27a5f8cf3f81b867a0b792b7"
+      }
     }
   },
   "cases": [
@@ -379,16 +402,16 @@
       "expected": {
         "accessibility": {
           "2": [
-            2.6939034461975098,
-            2.896800994873047,
-            4.572679042816162,
+            2.736459732055664,
+            2.761491298675537,
+            4.534395217895508,
             1.0,
-            1.9855737686157227,
-            3.8156754970550537,
-            4.90233039855957,
-            3.373405933380127,
-            5.06529426574707,
-            3.9454827308654785
+            1.7998313903808594,
+            3.494502544403076,
+            4.262803554534912,
+            3.757995128631592,
+            4.979069232940674,
+            4.5288872718811035
           ],
           "3": [
             0.0,
@@ -405,16 +428,16 @@
         },
         "symmetry_backbone": {
           "2": [
-            0.538780689239502,
-            0.7242002487182617,
-            0.9145357608795166,
+            0.5472919344902039,
+            0.6903728246688843,
+            0.9068790674209595,
             0.20000000298023224,
-            0.6618579030036926,
-            0.7631350755691528,
-            0.8170551061630249,
-            0.6746811866760254,
-            0.8442156910896301,
-            0.6575804352760315
+            0.5999438166618347,
+            0.6989005208015442,
+            0.7104672789573669,
+            0.7515990138053894,
+            0.8298448324203491,
+            0.7548145651817322
           ],
           "3": [
             0.0,
@@ -431,12 +454,12 @@
         },
         "symmetry_merged": {
           "2": [
+            0.950140118598938,
             1.0,
+            0.904662013053894,
             1.0,
-            0.9898131489753723,
-            1.0,
-            0.9958705902099609,
-            1.0,
+            0.8581786155700684,
+            0.9345820546150208,
             1.0,
             1.0,
             1.0,
@@ -1393,7 +1416,7 @@
             1.0,
             1.0,
             1.8898816108703613,
-            2.888845443725586,
+            2.336573600769043,
             1.8898816108703613,
             0.0
           ],
@@ -1411,7 +1434,7 @@
             0.5,
             1.0,
             0.9449408054351807,
-            0.9629485011100769,
+            0.7788578271865845,
             0.6299605369567871,
             0.0
           ],
@@ -1429,7 +1452,7 @@
             1.0,
             1.0,
             0.9449408054351807,
-            0.8794166445732117,
+            0.7788578271865845,
             0.5,
             0.0
           ],
@@ -1591,7 +1614,7 @@
           "2": [
             1.0,
             1.0,
-            2.0,
+            1.417411208152771,
             1.0,
             1.0
           ],
@@ -1607,7 +1630,7 @@
           "2": [
             1.0,
             0.5,
-            1.0,
+            0.7087056040763855,
             0.5,
             1.0
           ],
@@ -1623,7 +1646,7 @@
           "2": [
             1.0,
             0.5,
-            0.9449408054351807,
+            0.7087056040763855,
             0.5,
             1.0
           ],

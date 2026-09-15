@@ -171,7 +171,7 @@ void _CV_ConcentricBackbonePropagateProbabilities(CVFloat* probabilities, CVSize
 		}else{
 			for(ni=0;ni<vertexEdgesCount;ni++){
 				CVIndex neighborVertex = vertexEdgesList[ni];
-				CVFloat edgeWeight = network->edgesWeights[ni];
+				CVFloat edgeWeight = network->edgesWeights[network->vertexEdgesIndices[vertexIndex][ni]];
 				if(distances[neighborVertex]>level){
 					totalWeight+=edgeWeight;
 					betweenLevelConnections++;
@@ -202,7 +202,7 @@ void _CV_ConcentricBackbonePropagateProbabilities(CVFloat* probabilities, CVSize
 					}
 				}else{
 					CVIndex neighborVertex = vertexEdgesList[ni];
-					CVFloat edgeWeight = network->edgesWeights[ni];
+					CVFloat edgeWeight = network->edgesWeights[network->vertexEdgesIndices[vertexIndex][ni]];
 					if(distances[neighborVertex]>level){
 						probabilities[neighborVertex] += propagateFactor*edgeWeight;
 						pathsCount[neighborVertex] += pathsFactor;
@@ -507,10 +507,12 @@ void CVConcentricMergedInformationUpdateWithConcentricStructure(CVConcentricMerg
 	//FIX Edges
 	
 	CVUIntegerArray* edges = &(info->edges);
+	CVFloatArray* edgeWeights = &(info->edgeWeights);
 	CVUIntegerArray* edgesIndices = &(info->edgesIndices);
 	//CVUIntegerArray* levelsEdgesIndices = &(info->levelsEdgesIndices);
 	
 	edges->count = 0;
+	edgeWeights->count = 0;
 	edgesIndices->count = 0;
 	//	levelsEdgesIndices->count = 0;
 	CVUIntegerStackPush(0, edgesIndices);
@@ -575,6 +577,10 @@ void CVConcentricMergedInformationUpdateWithConcentricStructure(CVConcentricMerg
 						//if(!CVBitArrayTest(nextLevelVisited, mergedConcentricIndex)){
 						//	CVBitArraySet(nextLevelVisited, mergedConcentricIndex);
 							CVUIntegerStackPush(mergedConcentricIndex, edges);
+							if(network->edgeWeighted){
+								CVIndex edgeIndex = network->vertexEdgesIndices[vertexIndex][ni];
+								CVFloatArrayAdd(network->edgesWeights[edgeIndex], edgeWeights);
+							}
 							edgesCount++;
 						//}
 					}
@@ -607,7 +613,6 @@ void _CV_ConcentricMergedPropagateProbabilities(CVFloatArray* mergedProbabilitie
 	
 	CVSize concentricCount = CVConcentricCountVerticesAtLevel(level, structure);
 	CVBool isWeighted = structure->network->edgeWeighted;
-	const CVNetwork* network = structure->network;
 	CVIndex concentricIndex;
 	for (concentricIndex=0; concentricIndex<concentricCount; concentricIndex++) {
 		CVSize inMergedCount = 0;
@@ -615,6 +620,11 @@ void _CV_ConcentricMergedPropagateProbabilities(CVFloatArray* mergedProbabilitie
 		if(inMergedCount){
 			CVSize concentricEdgesCount = 0;
 			CVIndex* concentricEdges = CVConcentricMergedEdgesConcentricIndices(concentricIndex, level, &concentricEdgesCount, info);
+			const CVFloat* concentricEdgeWeights = NULL;
+			if(isWeighted && concentricEdgesCount){
+				CVIndex edgeOffset = info->edgesIndices.data[structure->levelsIndices[level]+concentricIndex];
+				concentricEdgeWeights = info->edgeWeights.data + edgeOffset;
+			}
 			//printf(" (N=%"CVSizeScan" l=%"CVSizeScan" lCount=%"CVSizeScan")\n",edgesCount,l,mergedInformation->levelsCount);
 			
 			CVSize betweenLevelConnections = concentricEdgesCount;
@@ -624,10 +634,10 @@ void _CV_ConcentricMergedPropagateProbabilities(CVFloatArray* mergedProbabilitie
 				propagateFactor/=betweenLevelConnections;
 			}else{
 				for(CVIndex concentricEdgeIndex=0;concentricEdgeIndex<concentricEdgesCount;concentricEdgeIndex++){
-					CVIndex edgeIndex = concentricEdges[concentricEdgeIndex];
-					totalWeight+=network->edgesWeights[edgeIndex];
+					totalWeight+=concentricEdgeWeights[concentricEdgeIndex];
 				}
-				propagateFactor/=totalWeight;
+				// Match backbone propagation when all outgoing weights are zero.
+				propagateFactor = totalWeight==0.0f ? 0.0f : propagateFactor/totalWeight;
 			}
 
 			CVSize pathsFactor = mergedPathsCount->data[structure->levelsIndices[level]+concentricIndex];
@@ -635,7 +645,7 @@ void _CV_ConcentricMergedPropagateProbabilities(CVFloatArray* mergedProbabilitie
 				if(!isWeighted){
 					mergedProbabilities->data[structure->levelsIndices[level+1]+concentricEdges[concentricEdgeIndex]]+= propagateFactor;
 				}else{
-					CVFloat edgeWeight = network->edgesWeights[concentricEdges[concentricEdgeIndex]];
+					CVFloat edgeWeight = concentricEdgeWeights[concentricEdgeIndex];
 					mergedProbabilities->data[structure->levelsIndices[level+1]+concentricEdges[concentricEdgeIndex]]+= propagateFactor*edgeWeight;
 				}
 				mergedPathsCount->data[structure->levelsIndices[level+1]+concentricEdges[concentricEdgeIndex]]+= pathsFactor;
@@ -675,6 +685,7 @@ void CVConcentricMergedGetProbabilities(CVFloatArray* mergedProbabilities,CVUInt
 
 void CVConcentricMergedInformationDestroy(CVConcentricMergedInformation* information){
 	CVUIntegerArrayDestroy(&information->edges);
+	CVFloatArrayDestroy(&information->edgeWeights);
 	CVUIntegerArrayDestroy(&information->edgesIndices);
 	CVUIntegerArrayDestroy(&information->mergedVertices);
 	CVUIntegerArrayDestroy(&information->mergedIndices);
