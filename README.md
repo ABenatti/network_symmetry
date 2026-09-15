@@ -36,8 +36,7 @@ pip install git+https://github.com/ABenatti/network_symmetry.git
 
 Builds use NumPy 2 headers on Python 3.9 and newer, with Python-specific minimum
 versions. Python 3.6–3.8 retain the legacy NumPy 1 dependency and source-build configuration. The wheel workflow targets Python 3.9–3.14 on Linux, Windows, and 
-macOS (Intel and Apple Silicon). This target matrix is distinct from the 
-combinations verified locally.
+macOS (Intel and Apple Silicon).
 
 ## Usage
 Step 1: Import the libraries
